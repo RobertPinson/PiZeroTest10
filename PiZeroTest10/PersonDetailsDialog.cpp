@@ -1,5 +1,7 @@
 #include "PersonDetailsDialog.h"
 #include "ui_PersonDetailsDialog.h"
+#include <QPainter>
+#include <QBitmap>
 
 PersonDetailsDialog::PersonDetailsDialog(QWidget *parent)
 	: QDialog(parent), ui(new Ui::PersonDetailsDialog)
@@ -22,7 +24,17 @@ void PersonDetailsDialog::setMessage(QString message)
 
 void PersonDetailsDialog::setImage(QPixmap image)
 {	
-	ui->lblImage->setPixmap(image.scaled(ui->lblImage->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+	QPixmap scaledImage = image.scaled(ui->lblImage->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		
+	// Draw the mask.
+	QBitmap mask(scaledImage.size());
+	QPainter painter(&mask);
+	mask.fill(Qt::white);
+	painter.setBrush(Qt::black);
+	painter.drawEllipse(QPoint(mask.width() / 2, mask.height() / 2), 140, 140);
+	
+	scaledImage.setMask(mask);
+	ui->lblImage->setPixmap(scaledImage);
 }
 
 PersonDetailsDialog::~PersonDetailsDialog()
