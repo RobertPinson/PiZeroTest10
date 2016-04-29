@@ -10,7 +10,7 @@
       <Transport>None</Transport>
     </BuildHost>
     <DeploymentHost>
-      <HostName>192.168.0.19</HostName>
+      <HostName>192.168.0.24</HostName>
       <Transport>SSH</Transport>
       <UserName>pi</UserName>
     </DeploymentHost>
@@ -115,7 +115,12 @@
     </QtSettings>
   </Build>
   <Debug xsi:type="com.visualgdb.debug.remote">
-    <AdditionalStartupCommands />
+    <AdditionalStartupCommands>
+      <GDBPreStartupCommands>
+        <string>handle SIGILL noprint nostop</string>
+      </GDBPreStartupCommands>
+      <GDBStartupCommands />
+    </AdditionalStartupCommands>
     <AdditionalGDBSettings>
       <FilterSpuriousStoppedNotifications>false</FilterSpuriousStoppedNotifications>
       <ForceSingleThreadedMode>false</ForceSingleThreadedMode>

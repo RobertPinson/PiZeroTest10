@@ -32,10 +32,11 @@ public:
 	void PostMovement(QString cardId);
 	
 signals:
-	void movementResponse(const Dtos::MovementResponse &);	
-	
+	void movementResponse(const Dtos::MovementResponse &);
+	void requestError(QString message);
+		
 	protected slots :	
-		void OnResult(QNetworkReply* reply);
-	void handleSSLErrors(QNetworkReply* reply);
+		void onResult(QNetworkReply* reply);
+	void onError(QNetworkReply::NetworkError reply);	
 };
 

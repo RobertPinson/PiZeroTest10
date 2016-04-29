@@ -12,9 +12,9 @@ TEMPLATE = app
 
 #By default the following file lists are updated automatically by VisualGDB.
 
-SOURCES   += ApiClient.cpp ApiDtos.cpp MainWindow.cpp NfcReader.cpp PiZeroTest10.cpp Utility.cpp
-HEADERS   += ApiClient.h ApiDtos.h MainWindow.h NfcReader.h Utility.h
-FORMS     += MainWindow.ui
+SOURCES   += ApiClient.cpp MainWindow.cpp NfcReader.cpp PiZeroTest10.cpp Utility.cpp
+HEADERS   += ApiClient.h MainWindow.h NfcReader.h Utility.h
+FORMS     += MainWindow.ui SwipeDialog.ui
 RESOURCES += 
 
 include($$lower($$join(CONFIGNAME,,,.pro)))

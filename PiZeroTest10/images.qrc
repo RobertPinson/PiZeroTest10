@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/images/person-placeholder">
+        <file>C:/Users/pinso/Pictures/person-placeholder.jpg</file>
+    </qresource>
+</RCC>

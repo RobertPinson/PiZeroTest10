@@ -7,18 +7,20 @@
 #include <nfc/nfc-types.h>
 #include <nfc/nfc-emulation.h>
 #include "Utility.h"
-//#include "NfcReader.h"
+#include <QMutex>
 
 using namespace utility;
 using namespace std;
-
-Q_DECLARE_METATYPE(Dtos::MovementResponse)
 	
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+QMutex mutex;
+
+MainWindow::MainWindow(QWidget *parent)
+	: QMainWindow(parent)
+	, ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);	
+	QApplication::setOverrideCursor(Qt::BlankCursor);
+	setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
+	ui->setupUi(this);	
 	QTimer::singleShot(1000, this, SLOT(showFullScreen()));
 	
 	MyNfcReader = new NfcReader;	
@@ -34,8 +36,14 @@ MainWindow::MainWindow(QWidget *parent) :
 		SLOT(OnCardRemoved()));	
 		
 	QObject::connect(MyApiClient,
-		SIGNAL(movementResponse(Dtos::MovementResponse)), this,
-		SLOT(OnMovementResponse(Dtos::MovementResponse)));	
+		SIGNAL(movementResponse(Dtos::MovementResponse)),
+		this,
+		SLOT(OnMovementResponse(Dtos::MovementResponse)));
+	
+	QObject::connect(MyApiClient,
+		SIGNAL(requestError(QString)),
+		this,
+		SLOT(OnRequestError(QString)));	
 	
 	if (MyNfcReader->init() > 0)
 	{
@@ -45,14 +53,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::OnCardRemoved()
 {
-	//Todo card removed action e.g. set led colour green
+	//TODO set LED colour green
 }
 
 void MainWindow::OnCardPresent(QString uid)
-{
-	//ui->txtOutput->appendPlainText(uid += "\n");
-	
-	//TODO Set Led colour amber
+{	
+	//TODO Set LED colour amber
 	
 	
 	//Call API
@@ -62,79 +68,38 @@ void MainWindow::OnCardPresent(QString uid)
 
 void MainWindow::OnMovementResponse(Dtos::MovementResponse movementResponse)
 {
-	ui->txtOutput->appendPlainText("ID: " + QString::number(movementResponse.id));
-	ui->txtOutput->appendPlainText("Name: " + movementResponse.name);
+	mutex.lock();
+	qDebug() << "On Movement Post Response";
+	qDebug() << "ID: " + QString::number(movementResponse.id);
+	qDebug() << "Name: " + movementResponse.name; 
+	
+	PersonDetailsDialog* details = new PersonDetailsDialog(this);
+	details->setName(movementResponse.name);
+	details->setMessage(movementResponse.ingress ? QString("Welcome") : QString("Good Bye"));
+	
+	//image
+	if (!(movementResponse.image.length() <= 0))
+	{		
+		QPixmap p;
+		p.loadFromData(movementResponse.image, "JPG");	
+		details->setImage(p);	
+	}
+	
+	details->show();	
+	
+	QTimer::singleShot(2000, details, SLOT(hide()));
+	
+	//TODO beep & LED
+	
+	mutex.unlock();
+}
+
+void MainWindow::OnRequestError(QString message)
+{
+	qDebug() << "API ERROR: " + message;	
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
-}
-
-void MainWindow::ButtonClicked()
-{	
-	
-	
-//	ui->txtOutput->appendPlainText("");
-//	
-//	nfc_device *pnd;
-//	nfc_target nt;
-//	
-//	nfc_context *context;	
-//	string output;
-//	
-//	nfc_init(&context);
-//	if (context == NULL) {
-//		output += "Unable to init libnfc (malloc)\n";
-//		exit(EXIT_FAILURE);
-//	}
-//	
-//	const char *acLibnfcVersion = nfc_version();
-//	output += "Pi Zero uses libnfc ";
-//	output += acLibnfcVersion;
-//	output += "\n";
-//	
-//	pnd = nfc_open(context, NULL);
-// 
-//	if (pnd == NULL) {
-//		output += "ERROR: Unable to open NFC device.\n";
-//		exit(EXIT_FAILURE);
-//	}
-//	
-//	if (nfc_initiator_init(pnd) < 0) {
-//		nfc_perror(pnd, "nfc_initiator_init");
-//		exit(EXIT_FAILURE);
-//	}
-// 
-//	output += "NFC reader: ";
-//	output += nfc_device_get_name(pnd);
-//	output += "opened.\n";
-//	
-//	const nfc_modulation nmMifare = {
-//		.nmt = NMT_ISO14443A,
-//		.nbr = NBR_106,
-//	};
-//	
-//	if (nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt) > 0) {
-//		output += "The following (NFC) ISO14443A tag was found:\n";
-//		output += "    ATQA (SENS_RES): ";
-//		output += hexstring(nt.nti.nai.abtAtqa, 2);
-//		output += "-";
-//		output += hexstring(nt.nti.nai.abtAtqa, 2);
-//		output += "       UID (NFCID";
-//		output += (nt.nti.nai.abtUid[0] == 0x08 ? '3' : '1');
-//		output += "): ";
-//		output += hexstring(nt.nti.nai.abtUid, nt.nti.nai.szUidLen);
-//		output += "      SAK (SEL_RES): ";
-//		output += hexstring(&nt.nti.nai.btSak, 1);
-//		if (nt.nti.nai.szAtsLen) {
-//			output += "          ATS (ATR): ";
-//			output += hexstring(nt.nti.nai.abtAts, nt.nti.nai.szAtsLen);
-//		}
-//	}	
-//	
-//	ui->txtOutput->appendPlainText(QString::fromStdString(output));
-//	
-//	nfc_close(pnd);
-//	nfc_exit(context);	
+	delete ui;
 }

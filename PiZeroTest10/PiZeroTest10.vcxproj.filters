@@ -38,12 +38,14 @@
     <ClCompile Include="ApiClient.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="PersonDetailsDialog.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="MainWindow.ui">
       <Filter>Source files</Filter>
     </None>
-    <None Include="PiZeroTest10.pro" />
     <None Include="debug.pro">
       <Filter>QMake Project files</Filter>
     </None>
@@ -55,6 +57,12 @@
     </None>
     <None Include="PiZeroTest10-Release.vgdbsettings">
       <Filter>VisualGDB settings</Filter>
+    </None>
+    <None Include="PersonDetailsDialog.ui">
+      <Filter>Source files</Filter>
+    </None>
+    <None Include="images.qrc">
+      <Filter>Resource files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +76,12 @@
       <Filter>Header files</Filter>
     </ClInclude>
     <ClInclude Include="ApiClient.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="PersonDetailsDialog.h">
       <Filter>Header files</Filter>
     </ClInclude>
   </ItemGroup>

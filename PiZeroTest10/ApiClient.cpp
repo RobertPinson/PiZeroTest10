@@ -6,7 +6,8 @@
 #include <QUrl>
 #include <QUrlQuery>
 
-
+Q_DECLARE_METATYPE(Dtos::MovementResponse)
+	
 ApiClient::ApiClient()
 {
 	//http://192.168.0.23:8089/api/
@@ -21,7 +22,7 @@ void ApiClient::PostMovement(QString cardId)
 
 	QNetworkAccessManager* mgr = new QNetworkAccessManager(this);
 		
-	connect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(OnResult(QNetworkReply*)));	
+	connect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(onResult(QNetworkReply*)));	
 	
 	QUrl url(baseUrl + "Movement");
 	QNetworkRequest request(url);	
@@ -29,37 +30,53 @@ void ApiClient::PostMovement(QString cardId)
 	
 	qDebug() << "Http Post JSON";
 	QByteArray data = QJsonDocument(json).toJson();
-	QNetworkReply* currentReply = mgr->post(request, data);
+	QNetworkReply* reply = mgr->post(request, data);
+	
+	connect(reply,
+		SIGNAL(error(QNetworkReply::NetworkError)),
+		this,
+		SLOT(onError(QNetworkReply::NetworkError)));
 }
 
-void ApiClient::handleSSLErrors(QNetworkReply* reply)
-{
-	qDebug() << "Http Post SSL Error";
-}
-
-void ApiClient::OnResult(QNetworkReply* reply)
+void ApiClient::onResult(QNetworkReply* reply)
 {
 	qDebug() << "Http Post Response";
 
 	if (reply->error() != QNetworkReply::NoError)
-		return;  // ...only in a blog post emit error signal
+	{
+		QString message;		
+		message = QString("Error calling API: ") + QString::number(reply->error());		
+		emit requestError(message);	
+	}
+	else
+	{
+		Dtos::MovementResponse response;
 	
-	Dtos::MovementResponse response;
+		QByteArray response_data = reply->readAll();
+		QJsonDocument json = QJsonDocument::fromJson(response_data);
+		QJsonObject jsonObject = json.object();
 	
-	QByteArray response_data = reply->readAll();
-	QJsonDocument json = QJsonDocument::fromJson(response_data);
-	QJsonObject jsonObject = json.object();
-	
-	response.id = jsonObject["Id"].toInt();
-	response.ingress = jsonObject.value("Ingress").toBool();
-	response.name = jsonObject.value("Name").toString();
-	response.image = jsonObject.value("Image").toString().toUtf8();	
+		response.id = jsonObject["Id"].toInt();
+		response.ingress = jsonObject.value("Ingress").toBool();
+		response.name = jsonObject.value("Name").toString();
+		response.image = QByteArray::fromBase64(jsonObject.value("Image").toString().toLatin1());	
 
-	emit movementResponse(response);
+		emit movementResponse(response);	
+	}	
 		
 	reply->abort();
 	reply->deleteLater();
 	reply->manager()->deleteLater();
+}
+
+void ApiClient::onError(QNetworkReply::NetworkError err)
+{
+	if (err != QNetworkReply::NoError)
+	{
+		QString message;		
+		message = QString("Error calling API: ") + QString::number(err);		
+		emit requestError(message);	
+	}
 }
 
 ApiClient::~ApiClient()

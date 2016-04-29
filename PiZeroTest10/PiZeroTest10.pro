@@ -12,10 +12,10 @@ TEMPLATE = app
 
 #By default the following file lists are updated automatically by VisualGDB.
 
-SOURCES   += ApiClient.cpp MainWindow.cpp NfcReader.cpp PiZeroTest10.cpp Utility.cpp
-HEADERS   += ApiClient.h MainWindow.h NfcReader.h Utility.h
-FORMS     += MainWindow.ui
-RESOURCES += 
+SOURCES   += ApiClient.cpp MainWindow.cpp NfcReader.cpp PiZeroTest10.cpp Utility.cpp PersonDetailsDialog.cpp
+HEADERS   += ApiClient.h MainWindow.h NfcReader.h resource.h Utility.h PersonDetailsDialog.h
+FORMS     += MainWindow.ui PersonDetailsDialog.ui
+RESOURCES += images.qrc
 
 include($$lower($$join(CONFIGNAME,,,.pro)))
 
