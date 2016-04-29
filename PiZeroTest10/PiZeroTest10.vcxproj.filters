@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source files">
+      <UniqueIdentifier>{23e69bf2-5320-489b-a7fc-23ec9085acfc}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header files">
+      <UniqueIdentifier>{62f55113-8c73-4fe7-aef6-540d428b6abf}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource files">
+      <UniqueIdentifier>{85b5a991-5d5d-4ccc-8449-bd4ab1d92b44}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="QMake Project files">
+      <UniqueIdentifier>{f7224a83-f9dc-4a1f-8a68-15d0a128f1e1}</UniqueIdentifier>
+      <Extensions>pro</Extensions>
+    </Filter>
+    <Filter Include="VisualGDB settings">
+      <UniqueIdentifier>{18b93a57-bdea-4571-ad45-fa28026f1bae}</UniqueIdentifier>
+      <Extensions>*.vgdbsettings</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="PiZeroTest10.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWindow.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="NfcReader.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="ApiClient.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MainWindow.ui">
+      <Filter>Source files</Filter>
+    </None>
+    <None Include="PiZeroTest10.pro" />
+    <None Include="debug.pro">
+      <Filter>QMake Project files</Filter>
+    </None>
+    <None Include="PiZeroTest10-Debug.vgdbsettings">
+      <Filter>VisualGDB settings</Filter>
+    </None>
+    <None Include="release.pro">
+      <Filter>QMake Project files</Filter>
+    </None>
+    <None Include="PiZeroTest10-Release.vgdbsettings">
+      <Filter>VisualGDB settings</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MainWindow.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="NfcReader.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="ApiClient.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
