@@ -326,6 +326,9 @@
 #ifndef __gnu_linux__
 #define __gnu_linux__ 1
 #endif
+#ifndef RELEASE
+#define RELEASE 1
+#endif
 #ifndef __ARM_PCS_VFP
 #define __ARM_PCS_VFP 1
 #endif
@@ -391,6 +394,9 @@
 #endif
 #ifndef __THUMB_INTERWORK__
 #define __THUMB_INTERWORK__ 1
+#endif
+#ifndef QT_NETWORK_LIB
+#define QT_NETWORK_LIB 1
 #endif
 #ifndef __LACCUM_MAX__
 #define __LACCUM_MAX__ 0X7FFFFFFFFFFFFFFFP-31LK
@@ -473,6 +479,9 @@
 #endif
 #ifndef __ULLACCUM_MIN__
 #define __ULLACCUM_MIN__ 0.0ULLK
+#endif
+#ifndef __GCC_HAVE_DWARF2_CFI_ASM
+#define __GCC_HAVE_DWARF2_CFI_ASM 1
 #endif
 #ifndef __GXX_ABI_VERSION
 #define __GXX_ABI_VERSION 1002
@@ -1104,12 +1113,6 @@
 #ifndef __ATOMIC_RELEASE
 #define __ATOMIC_RELEASE 3
 #endif
-#ifndef NDEBUG
-#define NDEBUG 1
-#endif
-#ifndef RELEASE
-#define RELEASE 1
-#endif
 #endif
 
 // --- Include directories begin --- //
@@ -1118,6 +1121,7 @@
 //C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5
 //C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets
 //C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui
+//C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtNetwork
 //C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore
 //c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/include/c++/4.9
 //c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/include/c++/4.9/backward
@@ -1126,6 +1130,7 @@
 //c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/include
 //c:\sysgcc\raspberry\bin\../arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf
 //c:\sysgcc\raspberry\bin\../arm-linux-gnueabihf/sysroot/usr/include
+//Release
 // --- Include directories end --- //
 
 

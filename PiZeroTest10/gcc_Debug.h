@@ -386,6 +386,9 @@
 #ifndef __THUMB_INTERWORK__
 #define __THUMB_INTERWORK__ 1
 #endif
+#ifndef QT_NETWORK_LIB
+#define QT_NETWORK_LIB 1
+#endif
 #ifndef __LACCUM_MAX__
 #define __LACCUM_MAX__ 0X7FFFFFFFFFFFFFFFP-31LK
 #endif
@@ -1112,6 +1115,7 @@
 //C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5
 //C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets
 //C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui
+//C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtNetwork
 //C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore
 //c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/include/c++/4.9
 //c:\sysgcc\raspberry\bin\../lib/gcc/arm-linux-gnueabihf/4.9/../../../../arm-linux-gnueabihf/include/c++/4.9/backward

@@ -18,7 +18,7 @@ class MainWindow : public QMainWindow
 	ApiClient *MyApiClient;	
     
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = 0);	
     ~MainWindow();
 
 protected slots:  
@@ -26,8 +26,19 @@ protected slots:
 	void OnCardRemoved();
 	void OnMovementResponse(Dtos::MovementResponse movementResponse);
 	void OnRequestError(QString message);
+	
+	private slots :
+		 void doWork();
 private:
     Ui::MainWindow *ui;	
+	const int pinZero = 0;
+	const int pinTwo = 2;
+	const int pinOne = 1;
+	bool isGreen;
+	QTimer yellowLedTimer;
+	void startYellowLed();
+	void stopYellowLed();
+	
 };
 
 #endif // MAINWINDOW_H

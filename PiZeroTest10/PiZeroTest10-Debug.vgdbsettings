@@ -12,7 +12,7 @@
     <DeploymentHost>
       <HostName>192.168.0.24</HostName>
       <Transport>SSH</Transport>
-      <UserName>pi</UserName>
+      <UserName>root</UserName>
     </DeploymentHost>
     <MainSourceTransferCommand>
       <SkipWhenRunningCommandList>false</SkipWhenRunningCommandList>
@@ -94,7 +94,7 @@
         <Transport>None</Transport>
       </RemoteHost>
       <Command>C:\SysGCC\Raspberry\Qt\v5\qmake.exe</Command>
-      <Arguments> PiZeroTest10.pro CONFIGNAME=$(ConfigurationName)   </Arguments>
+      <Arguments> PiZeroTest10.pro CONFIGNAME=$(ConfigurationName)        </Arguments>
       <WorkingDirectory>$(BuildDir)</WorkingDirectory>
       <Environment>
         <Records>
@@ -159,7 +159,7 @@
     </LaunchGDBSettings>
     <GenerateCtrlBreakInsteadOfCtrlC>false</GenerateCtrlBreakInsteadOfCtrlC>
     <DeploymentTargetPath>/tmp/$(TargetFileName)</DeploymentTargetPath>
-    <X11WindowMode>Remote</X11WindowMode>
+    <X11WindowMode>Local</X11WindowMode>
     <KeepConsoleAfterExit>false</KeepConsoleAfterExit>
     <RunGDBUnderSudo>false</RunGDBUnderSudo>
     <DeploymentMode>Auto</DeploymentMode>

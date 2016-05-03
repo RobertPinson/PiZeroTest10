@@ -8,11 +8,15 @@
 #include <nfc/nfc-emulation.h>
 #include "Utility.h"
 #include <QMutex>
+#include <wiringPi.h>
+#include <softTone.h>
 
 using namespace utility;
 using namespace std;
 	
 QMutex mutex;
+
+#define PIN 3
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -45,25 +49,60 @@ MainWindow::MainWindow(QWidget *parent)
 		this,
 		SLOT(OnRequestError(QString)));	
 	
+	QObject::connect(&yellowLedTimer, SIGNAL(timeout()), this, SLOT(doWork()));
+	
+	//Start NFC Reader thread
 	if (MyNfcReader->init() > 0)
 	{
 		MyNfcReader->start();
-	}	
+	}
+	
+	if (wiringPiSetup() == -1)
+	{
+		qDebug() << "wiringPi setup error";
+	}
+	
+	softToneCreate(PIN);
+	pwmSetMode(PWM_MODE_MS);
+	
+	//set pin mode for LED
+	pinMode(pinZero, OUTPUT);
+	pinMode(pinTwo, OUTPUT);	
+	pinMode(pinOne, PWM_OUTPUT);
+	
+	//Set LED Green
+	digitalWrite(pinZero, LOW);
+	digitalWrite(pinTwo, HIGH);	
 }
 
 void MainWindow::OnCardRemoved()
 {
-	//TODO set LED colour green
+	//TODO set LED colour ??
+	//pwmWrite(pinOne, 0);
 }
 
 void MainWindow::OnCardPresent(QString uid)
 {	
-	//TODO Set LED colour amber
+	startYellowLed();
 	
+	//Sound buzzer
+	//pwmWrite(pinOne, 200);
 	
-	//Call API
+	int scale[8] = { 600, 500, 0 };
+
+	int i, j;
+	char buf[80];
+	
+	for (i = 0; i < 3; ++i)
+	{
+		printf("%3d\n", i);
+		softToneWrite(PIN, scale[i]);
+		delay(100);
+	}	
+	
+//Call API
 	qDebug() << "Card Present: Calling API...";
-	MyApiClient->PostMovement(uid);	
+	MyApiClient->PostMovement(uid);
 }
 
 void MainWindow::OnMovementResponse(Dtos::MovementResponse movementResponse)
@@ -89,17 +128,57 @@ void MainWindow::OnMovementResponse(Dtos::MovementResponse movementResponse)
 	
 	QTimer::singleShot(2000, details, SLOT(hide()));
 	
-	//TODO beep & LED
+	//TODO success beep & LED GREEN
+	stopYellowLed();
 	
 	mutex.unlock();
+}
+
+void MainWindow::doWork()
+{
+	if (isGreen)
+	{
+		//LED red
+		digitalWrite(pinZero, HIGH);
+		digitalWrite(pinTwo, LOW);	
+		isGreen = false;
+	}
+	else
+	{
+		//LED green
+		digitalWrite(pinZero, LOW);
+		digitalWrite(pinTwo, HIGH);
+		isGreen = true;
+	}		
+}
+
+void MainWindow::startYellowLed()
+{	
+	yellowLedTimer.start(0.005);
+}
+
+void MainWindow::stopYellowLed()
+{
+	yellowLedTimer.stop();
+	
+	//LED green
+	digitalWrite(pinZero, LOW);
+	digitalWrite(pinTwo, HIGH);	
 }
 
 void MainWindow::OnRequestError(QString message)
 {
 	qDebug() << "API ERROR: " + message;	
+	
+	//TODO LED RED then GREEN
+	
+	//TODO buzzer error	
+	
 }
 
 MainWindow::~MainWindow()
 {
 	delete ui;
+	digitalWrite(pinZero, LOW);
+	digitalWrite(pinTwo, LOW);	
 }
