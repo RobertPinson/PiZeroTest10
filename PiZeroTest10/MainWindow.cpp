@@ -62,13 +62,16 @@ MainWindow::MainWindow(QWidget *parent)
 		qDebug() << "wiringPi setup error";
 	}
 	
-	softToneCreate(PIN);
-	pwmSetMode(PWM_MODE_MS);
+	//softToneCreate(PIN);
+	//pwmSetMode(PWM_MODE_MS);
 	
 	//set pin mode for LED
 	pinMode(pinZero, OUTPUT);
 	pinMode(pinTwo, OUTPUT);	
 	pinMode(pinOne, PWM_OUTPUT);
+	
+	//buzzer
+	pinMode(PIN, OUTPUT);	
 	
 	//Set LED Green
 	digitalWrite(pinZero, LOW);
@@ -79,30 +82,34 @@ void MainWindow::OnCardRemoved()
 {
 	//TODO set LED colour ??
 	//pwmWrite(pinOne, 0);
+	digitalWrite(PIN, LOW);
 }
 
 void MainWindow::OnCardPresent(QString uid)
 {	
+	//Call API
+	qDebug() << "Card Present: Calling API...";
+	MyApiClient->PostMovement(uid);
+	
+	//Set LED Yellow
 	startYellowLed();
 	
 	//Sound buzzer
+	digitalWrite(PIN, HIGH);
+	
 	//pwmWrite(pinOne, 200);
 	
-	int scale[8] = { 600, 500, 0 };
-
-	int i, j;
-	char buf[80];
-	
-	for (i = 0; i < 3; ++i)
-	{
-		printf("%3d\n", i);
-		softToneWrite(PIN, scale[i]);
-		delay(100);
-	}	
-	
-//Call API
-	qDebug() << "Card Present: Calling API...";
-	MyApiClient->PostMovement(uid);
+//	int scale[8] = { 600, 0 };
+//
+//	int i, j;
+//	char buf[80];
+//	
+//	for (i = 0; i < 2; ++i)
+//	{
+//		printf("%3d\n", i);
+//		softToneWrite(PIN, scale[i]);
+//		delay(100);
+//	}	
 }
 
 void MainWindow::OnMovementResponse(Dtos::MovementResponse movementResponse)
@@ -154,7 +161,7 @@ void MainWindow::doWork()
 
 void MainWindow::startYellowLed()
 {	
-	yellowLedTimer.start(0.005);
+	yellowLedTimer.start(0);
 }
 
 void MainWindow::stopYellowLed()
