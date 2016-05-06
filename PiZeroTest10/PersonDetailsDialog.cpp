@@ -2,6 +2,7 @@
 #include "ui_PersonDetailsDialog.h"
 #include <QPainter>
 #include <QBitmap>
+#include <QDebug>
 
 PersonDetailsDialog::PersonDetailsDialog(QWidget *parent)
 	: QDialog(parent), ui(new Ui::PersonDetailsDialog)
@@ -31,7 +32,12 @@ void PersonDetailsDialog::setImage(QPixmap image)
 	QPainter painter(&mask);
 	mask.fill(Qt::white);
 	painter.setBrush(Qt::black);
-	painter.drawEllipse(QPoint(mask.width() / 2, mask.height() / 2), 140, 140);
+	painter.drawEllipse(QPoint(mask.width() / 2, mask.height() / 2), 75, 75);
+	
+	qDebug() << "Mask Width: ";
+	qDebug() << mask.width();
+	qDebug() << "Mask Height: ";
+	qDebug() << mask.height();
 	
 	scaledImage.setMask(mask);
 	ui->lblImage->setPixmap(scaledImage);

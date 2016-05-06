@@ -22,13 +22,14 @@ MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 	, ui(new Ui::MainWindow)
 {
-	QApplication::setOverrideCursor(Qt::BlankCursor);
-	setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
+	//QApplication::setOverrideCursor(Qt::BlankCursor);
+	//setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
 	ui->setupUi(this);	
-	QTimer::singleShot(1000, this, SLOT(showFullScreen()));
+	//QTimer::singleShot(1000, this, SLOT(showFullScreen()));
 	
 	MyNfcReader = new NfcReader;	
 	MyApiClient = new ApiClient;
+	MyMqttClient = new MqttClient(userName, deviceId, password);
 	
 	//wire up events
 	QObject::connect(MyNfcReader,
@@ -56,33 +57,36 @@ MainWindow::MainWindow(QWidget *parent)
 	{
 		MyNfcReader->start();
 	}
-	
+		
 	if (wiringPiSetup() == -1)
 	{
 		qDebug() << "wiringPi setup error";
 	}
 	
 	//softToneCreate(PIN);
-	//pwmSetMode(PWM_MODE_MS);
-	
+	//pwmSetMode(PWM_MODE_BAL);
+		
 	//set pin mode for LED
-	pinMode(pinZero, OUTPUT);
-	pinMode(pinTwo, OUTPUT);	
-	pinMode(pinOne, PWM_OUTPUT);
-	
-	//buzzer
-	pinMode(PIN, OUTPUT);	
-	
-	//Set LED Green
-	digitalWrite(pinZero, LOW);
-	digitalWrite(pinTwo, HIGH);	
+//	pinMode(pinZero, OUTPUT);
+//	pinMode(pinTwo, OUTPUT);	
+//	pinMode(pinOne, PWM_OUTPUT);
+//	pwmSetClock(2);
+//	pwmSetRange(10);
+//	pwmWrite(pinOne, 5);
+//	
+//	//buzzer
+//	pinMode(PIN, OUTPUT);	
+//	
+//	//Set LED Green
+//	digitalWrite(pinZero, LOW);
+//	digitalWrite(pinTwo, HIGH);	
 }
 
 void MainWindow::OnCardRemoved()
 {
 	//TODO set LED colour ??
 	//pwmWrite(pinOne, 0);
-	digitalWrite(PIN, LOW);
+	//digitalWrite(PIN, LOW);
 }
 
 void MainWindow::OnCardPresent(QString uid)
@@ -91,11 +95,19 @@ void MainWindow::OnCardPresent(QString uid)
 	qDebug() << "Card Present: Calling API...";
 	MyApiClient->PostMovement(uid);
 	
+	QString message = "Card swiped ID: " + uid;
+	
+	QByteArray ba = message.toLatin1();
+	const char *c_msg = ba.data(); 
+	
+	//send message
+	MyMqttClient->publish("device/2/movement", c_msg);
+	
 	//Set LED Yellow
 	startYellowLed();
 	
 	//Sound buzzer
-	digitalWrite(PIN, HIGH);
+	//digitalWrite(PIN, HIGH);
 	
 	//pwmWrite(pinOne, 200);
 	
@@ -143,20 +155,20 @@ void MainWindow::OnMovementResponse(Dtos::MovementResponse movementResponse)
 
 void MainWindow::doWork()
 {
-	if (isGreen)
-	{
-		//LED red
-		digitalWrite(pinZero, HIGH);
-		digitalWrite(pinTwo, LOW);	
-		isGreen = false;
-	}
-	else
-	{
-		//LED green
-		digitalWrite(pinZero, LOW);
-		digitalWrite(pinTwo, HIGH);
-		isGreen = true;
-	}		
+//	if (isGreen)
+//	{
+//		//LED red
+//		digitalWrite(pinZero, HIGH);
+//		digitalWrite(pinTwo, LOW);	
+//		isGreen = false;
+//	}
+//	else
+//	{
+//		//LED green
+//		digitalWrite(pinZero, LOW);
+//		digitalWrite(pinTwo, HIGH);
+//		isGreen = true;
+//	}		
 }
 
 void MainWindow::startYellowLed()
@@ -169,8 +181,8 @@ void MainWindow::stopYellowLed()
 	yellowLedTimer.stop();
 	
 	//LED green
-	digitalWrite(pinZero, LOW);
-	digitalWrite(pinTwo, HIGH);	
+//	digitalWrite(pinZero, LOW);
+//	digitalWrite(pinTwo, HIGH);	
 }
 
 void MainWindow::OnRequestError(QString message)
@@ -186,6 +198,6 @@ void MainWindow::OnRequestError(QString message)
 MainWindow::~MainWindow()
 {
 	delete ui;
-	digitalWrite(pinZero, LOW);
-	digitalWrite(pinTwo, LOW);	
+//	digitalWrite(pinZero, LOW);
+//	digitalWrite(pinTwo, LOW);	
 }

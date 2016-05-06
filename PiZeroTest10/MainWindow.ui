@@ -6,23 +6,41 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1200</width>
-    <height>710</height>
+    <width>320</width>
+    <height>240</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle">
    <string>PiZeroTest10</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color:rgb(67, 67, 100);
-color: rgb(195, 195, 195)</string>
+   <string notr="true">background-color:rgb(0, 0, 68);
+color: rgb(221, 221, 221)</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="1" column="0">
-     <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0">
+     <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetFixedSize</enum>
+      </property>
+      <property name="spacing">
+       <number>0</number>
+      </property>
       <item row="2" column="0">
        <widget class="QLabel" name="label_2">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -31,8 +49,10 @@ color: rgb(195, 195, 195)</string>
         </property>
         <property name="font">
          <font>
-          <family>Segoe UI</family>
-          <pointsize>48</pointsize>
+          <family>Segoe UI Semibold</family>
+          <pointsize>33</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">
@@ -43,11 +63,28 @@ color: rgb(195, 195, 195)</string>
         </property>
        </widget>
       </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <family>Segoe UI Semibold</family>
+          <pointsize>33</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Here</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

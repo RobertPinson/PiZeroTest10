@@ -36,7 +36,7 @@ DISTNAME      = PiZeroTest101.0.0
 DISTDIR = E:/Code/PiZeroTest10/PiZeroTest10/PiZeroTest10/Release/PiZeroTest101.0.0
 LINK          = C:/SysGCC/Raspberry/bin/arm-linux-gnueabihf-g++.exe
 LFLAGS        = -lnfc -Wl,-O1
-LIBS          = $(SUBLIBS) -lwiringPi -Lc:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/lib/arm-linux-gnueabihf -lQt5Widgets -lQt5Gui -lQt5Network -lQt5Core -lGLESv2 -lpthread 
+LIBS          = $(SUBLIBS) -lwiringPi -lmosquitto -Lc:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/lib/arm-linux-gnueabihf -lQt5Widgets -lQt5Gui -lQt5Network -lQt5Core -lGLESv2 -lpthread 
 AR            = C:/SysGCC/Raspberry/bin/arm-linux-gnueabihf-ar.exe cqs
 RANLIB        = 
 SED           = sed
@@ -53,7 +53,8 @@ SOURCES       = ApiClient.cpp \
 		NfcReader.cpp \
 		PiZeroTest10.cpp \
 		Utility.cpp \
-		PersonDetailsDialog.cpp Release/qrc_images.cpp \
+		PersonDetailsDialog.cpp \
+		MqttClient.cpp Release/qrc_images.cpp \
 		Release/moc_ApiClient.cpp \
 		Release/moc_MainWindow.cpp \
 		Release/moc_NfcReader.cpp \
@@ -64,6 +65,7 @@ OBJECTS       = Release/ApiClient.o \
 		Release/PiZeroTest10.o \
 		Release/Utility.o \
 		Release/PersonDetailsDialog.o \
+		Release/MqttClient.o \
 		Release/qrc_images.o \
 		Release/moc_ApiClient.o \
 		Release/moc_MainWindow.o \
@@ -74,12 +76,14 @@ DIST          =  ApiClient.h \
 		NfcReader.h \
 		resource.h \
 		Utility.h \
-		PersonDetailsDialog.h ApiClient.cpp \
+		PersonDetailsDialog.h \
+		MqttClient.h ApiClient.cpp \
 		MainWindow.cpp \
 		NfcReader.cpp \
 		PiZeroTest10.cpp \
 		Utility.cpp \
-		PersonDetailsDialog.cpp
+		PersonDetailsDialog.cpp \
+		MqttClient.cpp
 QMAKE_TARGET  = PiZeroTest10
 DESTDIR       = Release/#avoid trailing-slash linebreak
 TARGET        = Release/PiZeroTest10
@@ -246,8 +250,8 @@ distdir: FORCE
 	@if not exist "$(DISTDIR)" mkdir "$(DISTDIR)" & if not exist "$(DISTDIR)" exit 1
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents images.qrc $(DISTDIR)/
-	$(COPY_FILE) --parents ApiClient.h MainWindow.h NfcReader.h resource.h Utility.h PersonDetailsDialog.h $(DISTDIR)/
-	$(COPY_FILE) --parents ApiClient.cpp MainWindow.cpp NfcReader.cpp PiZeroTest10.cpp Utility.cpp PersonDetailsDialog.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ApiClient.h MainWindow.h NfcReader.h resource.h Utility.h PersonDetailsDialog.h MqttClient.h $(DISTDIR)/
+	$(COPY_FILE) --parents ApiClient.cpp MainWindow.cpp NfcReader.cpp PiZeroTest10.cpp Utility.cpp PersonDetailsDialog.cpp MqttClient.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents MainWindow.ui PersonDetailsDialog.ui $(DISTDIR)/
 
 
@@ -273,6 +277,7 @@ compiler_rcc_make_all: Release/qrc_images.cpp
 compiler_rcc_clean:
 	-$(DEL_FILE) Release/qrc_images.cpp
 Release/qrc_images.cpp: images.qrc \
+		C:/Users/pinso/Pictures/person-placeholder150-150.jpg \
 		C:/Users/pinso/Pictures/person-placeholder.jpg
 	'C:\SysGCC\Raspberry\Qt\v5\rcc.exe' -name images images.qrc -o Release/qrc_images.cpp
 
@@ -722,6 +727,7 @@ Release/moc_MainWindow.cpp: C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/QDialog \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/qdialog.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui/QPixmap \
+		MqttClient.h \
 		MainWindow.h
 	'C:\SysGCC\Raspberry\Qt\v5\moc.exe' $(DEFINES) -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/arm-linux-gnueabihf -IE:/Code/PiZeroTest10/PiZeroTest10/PiZeroTest10 -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5 -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtNetwork -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore -I/usr/include/c++/4.9 -I/usr/include/arm-linux-gnueabihf/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/arm-linux-gnueabihf/4.9/include -I/usr/local/include -I/usr/lib/gcc/arm-linux-gnueabihf/4.9/include-fixed -I/usr/include/arm-linux-gnueabihf -I/usr/include MainWindow.h -o Release/moc_MainWindow.cpp
 
@@ -1483,6 +1489,7 @@ Release/MainWindow.o: MainWindow.cpp MainWindow.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/QDialog \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/qdialog.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui/QPixmap \
+		MqttClient.h \
 		Release/ui_MainWindow.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/QAction \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/qaction.h \
@@ -1515,8 +1522,6 @@ Release/MainWindow.o: MainWindow.cpp MainWindow.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/qrubberband.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/QLabel \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/qlabel.h \
-		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/QStatusBar \
-		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/qstatusbar.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/QWidget \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/QMessageBox \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/qmessagebox.h \
@@ -1951,6 +1956,7 @@ Release/PiZeroTest10.o: PiZeroTest10.cpp MainWindow.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/QDialog \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/qdialog.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui/QPixmap \
+		MqttClient.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/QApplication \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/qapplication.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/qdesktopwidget.h \
@@ -2110,8 +2116,12 @@ Release/PersonDetailsDialog.o: PersonDetailsDialog.cpp PersonDetailsDialog.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui/qtextoption.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui/qpen.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui/QBitmap \
-		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui/qbitmap.h
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui/qbitmap.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Release/PersonDetailsDialog.o PersonDetailsDialog.cpp
+
+Release/MqttClient.o: MqttClient.cpp MqttClient.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Release/MqttClient.o MqttClient.cpp
 
 Release/qrc_images.o: Release/qrc_images.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Release/qrc_images.o Release/qrc_images.cpp

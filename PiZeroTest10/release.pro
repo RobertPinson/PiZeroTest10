@@ -6,7 +6,7 @@ DESTDIR = Release
 CONFIG += release
 
 DEFINES += RELEASE=1
-LIBS += -lpthread -lwiringPi
+LIBS += -lpthread -lwiringPi -lmosquitto
 INCLUDEPATH += 
 QMAKE_LFLAGS += 
 QMAKE_CXXFLAGS += -ggdb 

@@ -6,9 +6,9 @@ DESTDIR = Debug
 CONFIG += debug
 
 DEFINES += 
-LIBS += -LC:\SysGCC\Raspberry\arm-linux-gnueabihf\sysroot\usr\include -lpthread -lwiringPi
+LIBS += -LC:\SysGCC\Raspberry\arm-linux-gnueabihf\sysroot\usr\include -lpthread -lwiringPi -lmosquitto
 INCLUDEPATH += 
 QMAKE_LFLAGS += 
-QMAKE_CXXFLAGS += -ggdb -lnfc 
-QMAKE_CFLAGS += -ggdb -lnfc  -Wall 
+QMAKE_CXXFLAGS += -ggdb 
+QMAKE_CFLAGS += -ggdb 
 COMMONFLAGS += -lnfc

@@ -41,6 +41,9 @@
     <ClCompile Include="PersonDetailsDialog.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="MqttClient.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="MainWindow.ui">
@@ -82,6 +85,9 @@
       <Filter>Header files</Filter>
     </ClInclude>
     <ClInclude Include="PersonDetailsDialog.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="MqttClient.h">
       <Filter>Header files</Filter>
     </ClInclude>
   </ItemGroup>

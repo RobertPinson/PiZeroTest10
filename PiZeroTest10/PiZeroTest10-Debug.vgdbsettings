@@ -94,7 +94,7 @@
         <Transport>None</Transport>
       </RemoteHost>
       <Command>C:\SysGCC\Raspberry\Qt\v5\qmake.exe</Command>
-      <Arguments> PiZeroTest10.pro CONFIGNAME=$(ConfigurationName)        </Arguments>
+      <Arguments> PiZeroTest10.pro CONFIGNAME=$(ConfigurationName)            </Arguments>
       <WorkingDirectory>$(BuildDir)</WorkingDirectory>
       <Environment>
         <Records>

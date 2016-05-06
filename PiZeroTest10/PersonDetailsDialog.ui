@@ -2,46 +2,76 @@
 <ui version="4.0">
  <class>PersonDetailsDialog</class>
  <widget class="QDialog" name="PersonDetailsDialog">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>396</width>
-    <height>429</height>
+    <width>320</width>
+    <height>240</height>
    </rect>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(38, 38, 64);
-color: rgb(195, 195, 195)</string>
+   <string notr="true">background-color:rgb(0, 0, 68);
+color: rgb(221, 221, 221)</string>
   </property>
   <property name="modal">
-   <bool>false</bool>
+   <bool>true</bool>
   </property>
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>9</x>
-     <y>9</y>
-     <width>381</width>
-     <height>412</height>
+     <x>-1</x>
+     <y>0</y>
+     <width>321</width>
+     <height>241</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>2</number>
+    </property>
+    <property name="sizeConstraint">
+     <enum>QLayout::SetDefaultConstraint</enum>
+    </property>
     <property name="leftMargin">
-     <number>10</number>
+     <number>0</number>
     </property>
     <property name="topMargin">
-     <number>10</number>
+     <number>2</number>
     </property>
     <property name="rightMargin">
-     <number>10</number>
+     <number>0</number>
     </property>
     <property name="bottomMargin">
-     <number>10</number>
+     <number>2</number>
     </property>
+    <item>
+     <widget class="QLabel" name="lblName">
+      <property name="font">
+       <font>
+        <family>Segoe UI Semibold</family>
+        <pointsize>25</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Joe Blogs</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
     <item>
      <widget class="QLabel" name="lblImage">
       <property name="sizePolicy">
@@ -52,8 +82,8 @@ color: rgb(195, 195, 195)</string>
       </property>
       <property name="minimumSize">
        <size>
-        <width>361</width>
-        <height>290</height>
+        <width>150</width>
+        <height>150</height>
        </size>
       </property>
       <property name="layoutDirection">
@@ -63,7 +93,7 @@ color: rgb(195, 195, 195)</string>
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap resource="images.qrc">:/images/person-placeholder/C:/Users/pinso/Pictures/person-placeholder.jpg</pixmap>
+       <pixmap resource="images.qrc">:/images/person-placeholder/C:/Users/pinso/Pictures/person-placeholder150-150.jpg</pixmap>
       </property>
       <property name="alignment">
        <set>Qt::AlignHCenter|Qt::AlignTop</set>
@@ -75,9 +105,9 @@ color: rgb(195, 195, 195)</string>
       <property name="font">
        <font>
         <family>Segoe UI</family>
-        <pointsize>28</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
+        <pointsize>25</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
        </font>
       </property>
       <property name="text">
@@ -85,24 +115,6 @@ color: rgb(195, 195, 195)</string>
       </property>
       <property name="textFormat">
        <enum>Qt::AutoText</enum>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="lblName">
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>22</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>Joe Blogs</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
