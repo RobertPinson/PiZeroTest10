@@ -8,41 +8,31 @@
 #include "MqttClient.h"
 
 namespace Ui {
-class MainWindow;
+	class MainWindow;
 }
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
-		
-	NfcReader *MyNfcReader;
-	ApiClient *MyApiClient;
-	MqttClient *MyMqttClient;
+	Q_OBJECT
     
 public:
-    explicit MainWindow(QWidget *parent = 0);	
-    ~MainWindow();
+	explicit MainWindow(QWidget *parent = 0);	
+	~MainWindow();
 
-protected slots:  
+	protected slots : 
 	void OnCardPresent(QString uid);
 	void OnCardRemoved();
 	void OnMovementResponse(Dtos::MovementResponse movementResponse);
 	void OnRequestError(QString message);
 	
-	private slots :
-		 void doWork();
 private:
-    Ui::MainWindow *ui;	
-	const int pinZero = 0;
-	const int pinTwo = 2;
-	const int pinOne = 1;
-	bool isGreen;
-	QTimer yellowLedTimer;
-	void startYellowLed();
-	void stopYellowLed();
-	char *userName = "apzvvubw";
-	char *deviceId = "5";
-	char *password = "bqqhHe9qGf1A";
+	Ui::MainWindow *ui;
+	NfcReader *MyNfcReader;
+	ApiClient *MyApiClient;
+	MqttClient *MyMqttClient;
+	const char *userName = "apzvvubw";
+	const char *deviceId = "5";
+	const char *password = "bqqhHe9qGf1A";
 };
 
 #endif // MAINWINDOW_H

@@ -20,8 +20,8 @@
    <string>Dialog</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color:rgb(0, 0, 68);
-color: rgb(221, 221, 221)</string>
+   <string notr="true">background-color:rgb(9, 49, 69);
+color: rgb(255, 255, 255);</string>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -30,14 +30,14 @@ color: rgb(221, 221, 221)</string>
    <property name="geometry">
     <rect>
      <x>-1</x>
-     <y>0</y>
+     <y>-3</y>
      <width>321</width>
-     <height>241</height>
+     <height>242</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="sizeConstraint">
      <enum>QLayout::SetDefaultConstraint</enum>
@@ -46,20 +46,20 @@ color: rgb(221, 221, 221)</string>
      <number>0</number>
     </property>
     <property name="topMargin">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="rightMargin">
      <number>0</number>
     </property>
     <property name="bottomMargin">
-     <number>2</number>
+     <number>0</number>
     </property>
     <item>
      <widget class="QLabel" name="lblName">
       <property name="font">
        <font>
         <family>Segoe UI Semibold</family>
-        <pointsize>25</pointsize>
+        <pointsize>24</pointsize>
         <weight>75</weight>
         <bold>true</bold>
        </font>

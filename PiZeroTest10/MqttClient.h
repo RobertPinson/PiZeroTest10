@@ -11,22 +11,22 @@ class MqttClient
 private:
 
 	mosquitto * _data;
-	char * _userName;
-	char * _deviceId;
-	char * _devicePassword;
-	char * _serverName;
+	const char * _userName;
+	const char * _deviceId;
+	const char * _devicePassword;
+	const char * _serverName;
 	bool _authenticatedInServer;
 	bool connectIfNecessary();
-	void initialize(char * userName, char * deviceId, char * devicePassword, char * serverName, void(*callback)(char*, char*, unsigned int));
+	void initialize(const char * userName,const char * deviceId,const char * devicePassword,const char * serverName, void(*callback)(char*, char*, unsigned int));
   
 public:
 
-	MqttClient(char * userName, char * deviceId, char * devicePassword); 
+	MqttClient(const char * userName, const char * deviceId, const char * devicePassword); 
 	MqttClient(char * userName, char * deviceId, char * devicePassword, char * serverName);
 	MqttClient(char * userName, char * deviceId, char * devicePassword, void(*callback)(char*, char*, unsigned int));
 	MqttClient(char * userName, char * deviceId, char * devicePassword, char * serverName, void(*callback)(char*, char*, unsigned int));
 	~MqttClient();
-	bool publish(char * topic, const char * payload);
+	bool publish(const char * topic, const char * payload);
 	bool subscribe(char * topic);
 	bool loop();
 	bool disconnect();

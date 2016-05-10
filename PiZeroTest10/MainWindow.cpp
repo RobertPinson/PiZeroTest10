@@ -16,16 +16,19 @@ using namespace std;
 	
 QMutex mutex;
 
-#define PIN 3
+#define PINGREEN 17
+#define PINBLUE 4
+#define PINRED 22
+#define PINBEEP 27
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 	, ui(new Ui::MainWindow)
 {
-	//QApplication::setOverrideCursor(Qt::BlankCursor);
-	//setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
+	QApplication::setOverrideCursor(Qt::BlankCursor);
+	setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
 	ui->setupUi(this);	
-	//QTimer::singleShot(1000, this, SLOT(showFullScreen()));
+	QTimer::singleShot(1000, this, SLOT(showFullScreen()));
 	
 	MyNfcReader = new NfcReader;	
 	MyApiClient = new ApiClient;
@@ -50,49 +53,38 @@ MainWindow::MainWindow(QWidget *parent)
 		this,
 		SLOT(OnRequestError(QString)));	
 	
-	QObject::connect(&yellowLedTimer, SIGNAL(timeout()), this, SLOT(doWork()));
 	
 	//Start NFC Reader thread
 	if (MyNfcReader->init() > 0)
 	{
 		MyNfcReader->start();
-	}
-		
-	if (wiringPiSetup() == -1)
+	}	
+	
+	if (wiringPiSetupGpio() == -1)
 	{
 		qDebug() << "wiringPi setup error";
 	}
 	
-	//softToneCreate(PIN);
-	//pwmSetMode(PWM_MODE_BAL);
-		
-	//set pin mode for LED
-//	pinMode(pinZero, OUTPUT);
-//	pinMode(pinTwo, OUTPUT);	
-//	pinMode(pinOne, PWM_OUTPUT);
-//	pwmSetClock(2);
-//	pwmSetRange(10);
-//	pwmWrite(pinOne, 5);
-//	
-//	//buzzer
-//	pinMode(PIN, OUTPUT);	
-//	
-//	//Set LED Green
-//	digitalWrite(pinZero, LOW);
-//	digitalWrite(pinTwo, HIGH);	
+	pinMode(PINRED, OUTPUT);
+	pinMode(PINGREEN, OUTPUT);
+	pinMode(PINBLUE, OUTPUT);
+	pinMode(PINBEEP, OUTPUT);
+	
+	digitalWrite(PINRED, HIGH);
+	digitalWrite(PINGREEN, LOW);
+	digitalWrite(PINBLUE, HIGH);	
 }
 
 void MainWindow::OnCardRemoved()
-{
-	//TODO set LED colour ??
-	//pwmWrite(pinOne, 0);
-	//digitalWrite(PIN, LOW);
+{	
+	//Buzzer OFF
+	digitalWrite(PINBEEP, LOW);	
 }
 
 void MainWindow::OnCardPresent(QString uid)
 {	
 	//Call API
-	qDebug() << "Card Present: Calling API...";
+	qDebug() << "Card Present: Calling API...";	
 	MyApiClient->PostMovement(uid);
 	
 	QString message = "Card swiped ID: " + uid;
@@ -101,27 +93,16 @@ void MainWindow::OnCardPresent(QString uid)
 	const char *c_msg = ba.data(); 
 	
 	//send message
-	MyMqttClient->publish("device/2/movement", c_msg);
+	bool mqttResult = MyMqttClient->publish("device/2/movement", c_msg);
 	
-	//Set LED Yellow
-	startYellowLed();
+	qDebug() << "Movement mesage publish error!";
 	
-	//Sound buzzer
-	//digitalWrite(PIN, HIGH);
+	//Buzzer ON
+	digitalWrite(PINBEEP, HIGH);
 	
-	//pwmWrite(pinOne, 200);
-	
-//	int scale[8] = { 600, 0 };
-//
-//	int i, j;
-//	char buf[80];
-//	
-//	for (i = 0; i < 2; ++i)
-//	{
-//		printf("%3d\n", i);
-//		softToneWrite(PIN, scale[i]);
-//		delay(100);
-//	}	
+	//BLUE LED
+	digitalWrite(PINGREEN, HIGH);
+	digitalWrite(PINBLUE, LOW);
 }
 
 void MainWindow::OnMovementResponse(Dtos::MovementResponse movementResponse)
@@ -145,44 +126,13 @@ void MainWindow::OnMovementResponse(Dtos::MovementResponse movementResponse)
 	
 	details->show();	
 	
-	QTimer::singleShot(2000, details, SLOT(hide()));
+	QTimer::singleShot(2000, details, SLOT(hide())); 	
 	
-	//TODO success beep & LED GREEN
-	stopYellowLed();
+	//GREEN LED
+	digitalWrite(PINBLUE, HIGH);
+	digitalWrite(PINGREEN, LOW);
 	
 	mutex.unlock();
-}
-
-void MainWindow::doWork()
-{
-//	if (isGreen)
-//	{
-//		//LED red
-//		digitalWrite(pinZero, HIGH);
-//		digitalWrite(pinTwo, LOW);	
-//		isGreen = false;
-//	}
-//	else
-//	{
-//		//LED green
-//		digitalWrite(pinZero, LOW);
-//		digitalWrite(pinTwo, HIGH);
-//		isGreen = true;
-//	}		
-}
-
-void MainWindow::startYellowLed()
-{	
-	yellowLedTimer.start(0);
-}
-
-void MainWindow::stopYellowLed()
-{
-	yellowLedTimer.stop();
-	
-	//LED green
-//	digitalWrite(pinZero, LOW);
-//	digitalWrite(pinTwo, HIGH);	
 }
 
 void MainWindow::OnRequestError(QString message)
@@ -190,14 +140,26 @@ void MainWindow::OnRequestError(QString message)
 	qDebug() << "API ERROR: " + message;	
 	
 	//TODO LED RED then GREEN
+	digitalWrite(PINGREEN, HIGH);
+	digitalWrite(PINRED, LOW);
+	delay(500);
+	digitalWrite(PINRED, HIGH);
+	digitalWrite(PINGREEN, LOW);
 	
 	//TODO buzzer error	
-	
+	digitalWrite(PINBEEP, HIGH);
+	delay(200);
+	digitalWrite(PINBEEP, LOW);
 }
 
 MainWindow::~MainWindow()
 {
+	digitalWrite(PINRED, LOW);
+	digitalWrite(PINGREEN, LOW);
+	digitalWrite(PINBLUE, LOW);
+	
+	delete MyMqttClient;
+	delete MyApiClient;
+	delete MyNfcReader;
 	delete ui;
-//	digitalWrite(pinZero, LOW);
-//	digitalWrite(pinTwo, LOW);	
 }

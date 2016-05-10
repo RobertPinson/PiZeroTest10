@@ -10,7 +10,7 @@
       <Transport>None</Transport>
     </BuildHost>
     <DeploymentHost>
-      <HostName>192.168.0.24</HostName>
+      <HostName>192.168.0.101</HostName>
       <Transport>SSH</Transport>
       <UserName>root</UserName>
     </DeploymentHost>
@@ -34,7 +34,6 @@
       </FileMasks>
       <TransferNewFilesOnly>true</TransferNewFilesOnly>
       <IncludeSubdirectories>true</IncludeSubdirectories>
-      <SelectedDirectories />
     </MainSourceTransferCommand>
     <AllowChangingHostForMainCommands>false</AllowChangingHostForMainCommands>
     <SkipBuildIfNoSourceFilesChanged>false</SkipBuildIfNoSourceFilesChanged>

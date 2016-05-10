@@ -32,9 +32,9 @@ static void callbackDisconnected(struct mosquitto *mosq, void *userdata, int res
 	_this->resetConnectedState();
 }
 
-MqttClient::MqttClient(char * userName, 
-	char * deviceId, 
-	char * devicePassword)
+MqttClient::MqttClient(const char * userName, 
+	const char * deviceId, 
+	const char * devicePassword)
 {
 	this->initialize(userName, deviceId, devicePassword, MQTT_SERVERNAME, 0);
 }
@@ -70,10 +70,10 @@ MqttClient::MqttClient(char * userName,
  * Startup initializer (called from constructors).
  * Do not use it directly.
  */
-void MqttClient::initialize(char * userName, 
-	char * deviceId, 
-	char * devicePassword, 
-	char * serverName, 
+void MqttClient::initialize(const char * userName, 
+	const char * deviceId, 
+	const char * devicePassword, 
+	const char * serverName, 
 	void(*onMessage)(char*, char*, unsigned int))
 {
 	mosquitto_lib_init();
@@ -133,7 +133,7 @@ void MqttClient::resetConnectedState()
 /*
  * Publish message to topic.
  */
-bool MqttClient::publish(char* topic, const char* payload) 
+bool MqttClient::publish(const char* topic, const char* payload) 
 {
 	if (!this->connectIfNecessary())
 	{
