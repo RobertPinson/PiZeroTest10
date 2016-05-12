@@ -34,6 +34,7 @@
       </FileMasks>
       <TransferNewFilesOnly>true</TransferNewFilesOnly>
       <IncludeSubdirectories>true</IncludeSubdirectories>
+      <SelectedDirectories />
     </MainSourceTransferCommand>
     <AllowChangingHostForMainCommands>false</AllowChangingHostForMainCommands>
     <SkipBuildIfNoSourceFilesChanged>false</SkipBuildIfNoSourceFilesChanged>
@@ -130,7 +131,7 @@
       <MakeLogFile>false</MakeLogFile>
       <IgnoreModuleEventsWhileStepping>true</IgnoreModuleEventsWhileStepping>
       <UseRelativePathsOnly>false</UseRelativePathsOnly>
-      <ExitAction>None</ExitAction>
+      <ExitAction>KillApp</ExitAction>
       <Features>
         <DisableAutoDetection>false</DisableAutoDetection>
         <UseFrameParameter>false</UseFrameParameter>

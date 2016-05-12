@@ -21,6 +21,8 @@ QMutex mutex;
 #define PINRED 22
 #define PINBEEP 27
 
+static const QString path = "tracker.db";
+
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 	, ui(new Ui::MainWindow)
@@ -33,6 +35,13 @@ MainWindow::MainWindow(QWidget *parent)
 	MyNfcReader = new NfcReader;	
 	MyApiClient = new ApiClient;
 	MyMqttClient = new MqttClient(userName, deviceId, password);
+	MyDbManager = new DbManager(path);
+	
+	//Load people
+	//Call API
+	qDebug() << "Load People: Calling API...";	
+	QList<int> excludeIds;
+	MyApiClient->GetPeople(excludeIds);
 	
 	//wire up events
 	QObject::connect(MyNfcReader,
@@ -44,15 +53,19 @@ MainWindow::MainWindow(QWidget *parent)
 		SLOT(OnCardRemoved()));	
 		
 	QObject::connect(MyApiClient,
-		SIGNAL(movementResponse(Dtos::MovementResponse)),
+		SIGNAL(movementResponse(Dtos::Person)),
 		this,
-		SLOT(OnMovementResponse(Dtos::MovementResponse)));
+		SLOT(OnMovementResponse(Dtos::Person)));
+	
+	QObject::connect(MyApiClient,
+		SIGNAL(getPeopleResponse(Dtos::PeopleResponse)),
+		this,
+		SLOT(OnPeopleResponse(Dtos::PeopleResponse)));
 	
 	QObject::connect(MyApiClient,
 		SIGNAL(requestError(QString)),
 		this,
-		SLOT(OnRequestError(QString)));	
-	
+		SLOT(OnRequestError(QString)));		
 	
 	//Start NFC Reader thread
 	if (MyNfcReader->init() > 0)
@@ -84,8 +97,36 @@ void MainWindow::OnCardRemoved()
 void MainWindow::OnCardPresent(QString uid)
 {	
 	//Call API
-	qDebug() << "Card Present: Calling API...";	
-	MyApiClient->PostMovement(uid);
+	
+	//Local DB cache first	
+	Dtos::Person person = MyDbManager->GetPersonByCardId(uid);
+	
+	if (person.Name.isEmpty())
+	{
+		qDebug() << "Card Present Not in Cache: Calling API...";	
+		MyApiClient->PostMovement(uid);		
+		
+		//Buzzer ON
+		digitalWrite(PINBEEP, HIGH);
+	
+		//BLUE LED
+		digitalWrite(PINGREEN, HIGH);
+		digitalWrite(PINBLUE, LOW);
+	}
+	else
+	{
+		person.InLocation = !person.InLocation;		
+		MyDbManager->UpsertPerson(person);		
+			
+		//Buzzer ON
+		digitalWrite(PINBEEP, HIGH);
+	
+		//BLUE LED
+		digitalWrite(PINGREEN, HIGH);
+		digitalWrite(PINBLUE, LOW);
+		
+		ShowPersonDetailsDialog(person);
+	}	
 	
 	QString message = "Card swiped ID: " + uid;
 	
@@ -95,42 +136,36 @@ void MainWindow::OnCardPresent(QString uid)
 	//send message
 	bool mqttResult = MyMqttClient->publish("device/2/movement", c_msg);
 	
-	qDebug() << "Movement mesage publish error!";
-	
-	//Buzzer ON
-	digitalWrite(PINBEEP, HIGH);
-	
-	//BLUE LED
-	digitalWrite(PINGREEN, HIGH);
-	digitalWrite(PINBLUE, LOW);
+	qDebug() << "Movement message publish!";	
 }
 
-void MainWindow::OnMovementResponse(Dtos::MovementResponse movementResponse)
+void MainWindow::OnPeopleResponse(Dtos::PeopleResponse response)
+{
+	mutex.lock();
+	
+	if (response.IsSuccess)
+	{
+		foreach(const Dtos::Person & person, response.people)
+		{
+			MyDbManager->UpsertPerson(person);
+		}
+	}
+	else
+	{
+		qDebug() << "Get People Call Error: " + response.ErrorMessage;		
+	}
+	
+	mutex.unlock();
+}
+
+void MainWindow::OnMovementResponse(Dtos::Person person)
 {
 	mutex.lock();
 	qDebug() << "On Movement Post Response";
-	qDebug() << "ID: " + QString::number(movementResponse.id);
-	qDebug() << "Name: " + movementResponse.name; 
+	qDebug() << "ID: " + QString::number(person.Id);
+	qDebug() << "Name: " + person.Name; 
 	
-	PersonDetailsDialog* details = new PersonDetailsDialog(this);
-	details->setName(movementResponse.name);
-	details->setMessage(movementResponse.ingress ? QString("Welcome") : QString("Good Bye"));
-	
-	//image
-	if (!(movementResponse.image.length() <= 0))
-	{		
-		QPixmap p;
-		p.loadFromData(movementResponse.image, "JPG");	
-		details->setImage(p);	
-	}
-	
-	details->show();	
-	
-	QTimer::singleShot(2000, details, SLOT(hide())); 	
-	
-	//GREEN LED
-	digitalWrite(PINBLUE, HIGH);
-	digitalWrite(PINGREEN, LOW);
+	ShowPersonDetailsDialog(person);
 	
 	mutex.unlock();
 }
@@ -162,4 +197,28 @@ MainWindow::~MainWindow()
 	delete MyApiClient;
 	delete MyNfcReader;
 	delete ui;
+	delete MyDbManager;
+}
+
+void MainWindow::ShowPersonDetailsDialog(const Dtos::Person & person)
+{
+	PersonDetailsDialog* details = new PersonDetailsDialog(this);
+	details->setName(person.Name);
+	details->setMessage(person.InLocation ? QString("Welcome") : QString("Good Bye"));
+	
+	//image
+	if (!(person.Image.length() <= 0))
+	{		
+		QPixmap p;
+		p.loadFromData(person.Image);	
+		details->setImage(p);	
+	}
+	
+	details->show();	
+	
+	QTimer::singleShot(2000, details, SLOT(hide())); 	
+	
+	//GREEN LED
+	digitalWrite(PINBLUE, HIGH);
+	digitalWrite(PINGREEN, LOW);
 }

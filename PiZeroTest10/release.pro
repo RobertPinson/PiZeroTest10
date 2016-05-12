@@ -4,7 +4,7 @@
 
 DESTDIR = Release
 CONFIG += release
-
+QT += sql
 DEFINES += RELEASE=1
 LIBS += -lpthread -lwiringPi -lmosquitto
 INCLUDEPATH += 

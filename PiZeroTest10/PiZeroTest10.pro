@@ -12,8 +12,8 @@ TEMPLATE = app
 
 #By default the following file lists are updated automatically by VisualGDB.
 
-SOURCES   += ApiClient.cpp MainWindow.cpp NfcReader.cpp PiZeroTest10.cpp Utility.cpp PersonDetailsDialog.cpp MqttClient.cpp
-HEADERS   += ApiClient.h MainWindow.h NfcReader.h resource.h Utility.h PersonDetailsDialog.h MqttClient.h
+SOURCES   += ApiClient.cpp MainWindow.cpp NfcReader.cpp PiZeroTest10.cpp Utility.cpp PersonDetailsDialog.cpp MqttClient.cpp DbManager.cpp
+HEADERS   += ApiClient.h MainWindow.h NfcReader.h resource.h Utility.h PersonDetailsDialog.h MqttClient.h DbManager.h
 FORMS     += MainWindow.ui PersonDetailsDialog.ui
 RESOURCES += images.qrc
 

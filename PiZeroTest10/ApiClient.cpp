@@ -6,12 +6,136 @@
 #include <QUrl>
 #include <QUrlQuery>
 
-Q_DECLARE_METATYPE(Dtos::MovementResponse)
+Q_DECLARE_METATYPE(Dtos::PeopleResponse)
+Q_DECLARE_METATYPE(Dtos::Person)
 	
 ApiClient::ApiClient()
 {
-	//http://192.168.0.23:8089/api/
-	baseUrl = QString("http://trackerdemosite.azurewebsites.net/api/");
+	baseUrl = QString("http://192.168.0.50:8089/api/");
+	//baseUrl = QString("http://trackerdemosite.azurewebsites.net/api/");
+}
+
+void ApiClient::GetPeople(const QList<int>& excludeIds)
+{
+	QJsonObject json;
+	QString exIds;
+	
+	for (int i = 0; i < excludeIds.size(); i++)
+	{		
+		exIds += QString::number(excludeIds[i]);
+		if (i < excludeIds.size() - 1)
+			exIds += ",";
+	}
+	
+	json.insert("ExcludeIds", exIds);
+	json.insert("DeviceId", 5);	
+
+	QNetworkAccessManager* mgr = new QNetworkAccessManager(this);
+		
+	connect(mgr, 
+		SIGNAL(finished(QNetworkReply*)), 
+		this, 
+		SLOT(onGetPeopleResponse(QNetworkReply*)));	
+	
+	QUrl url(baseUrl + "People");
+	QUrlQuery query;	
+	query.addQueryItem("deviceId", QString("5"));
+	query.addQueryItem("excludeids", exIds);
+	
+	url.setQuery(query);	
+	
+	QNetworkRequest request(url);	
+	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+	
+	qDebug() << "Http GET People";
+	QByteArray data = QJsonDocument(json).toJson();
+	QNetworkReply* reply = mgr->get(request);
+	
+	connect(reply,
+		SIGNAL(error(QNetworkReply::NetworkError)),
+		this,
+		SLOT(onError(QNetworkReply::NetworkError)));
+}
+
+void ApiClient::onGetPeopleResponse(QNetworkReply* reply)
+{
+	qDebug() << "Http GET People response";	
+	
+	if (reply->error() != QNetworkReply::NoError)
+	{
+		QString message;		
+		message = QString("Error calling API GET People: ") + QString::number(reply->error());		
+		emit requestError(message);	
+	}
+	else
+	{
+		//Get data
+		Dtos::PeopleResponse peopleResponse;
+		
+		QByteArray responseData = reply->readAll();
+		
+		if (responseData.isEmpty())
+		{
+			qDebug() << "Get People returned no data.";
+			
+			peopleResponse.IsSuccess = false;
+			peopleResponse.ErrorMessage = "No Data Returned";
+			
+			emit getPeopleResponse(peopleResponse);
+			
+			return;
+		}
+		
+		QJsonParseError error;
+		QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData, &error);
+		
+		if (error.error != QJsonParseError::NoError)
+		{
+			qDebug() << "Get People Json Parse error.";
+			
+			peopleResponse.IsSuccess = false;
+			peopleResponse.ErrorMessage = "Json Parse Error";
+			
+			emit getPeopleResponse(peopleResponse);
+			
+			return;
+		}
+		
+		if ((jsonDoc.isNull() || jsonDoc.isEmpty()))
+		{
+			qDebug() << "Get People Json is empty.";
+			
+			peopleResponse.IsSuccess = false;
+			peopleResponse.ErrorMessage = "Json is empty";
+			
+			emit getPeopleResponse(peopleResponse);
+			
+			return;
+		}
+		
+		QJsonObject jsonObject = jsonDoc.object();			
+		QJsonArray jsonArray = jsonObject["People"].toArray();
+		
+		foreach(const QJsonValue & val, jsonArray)
+		{
+			QJsonObject obj = val.toObject();
+			Dtos::Person person;
+			person.Id = obj["Id"].toInt();
+			person.Name = obj["Name"].toString();
+			person.Image = QByteArray::fromBase64(obj["Image"].toString().toLatin1());	
+			person.CardUid = obj["CardId"].toString();
+			
+			peopleResponse.people.append(person);
+		}		
+				
+		qDebug() << "GET People returned: " + QString::number(peopleResponse.people.count());
+		
+		peopleResponse.IsSuccess = true;
+		emit getPeopleResponse(peopleResponse);	
+	}
+	reply->abort();
+	reply->deleteLater();
+	reply->manager()->deleteLater();
 }
 
 void ApiClient::PostMovement(QString cardId)
@@ -50,18 +174,18 @@ void ApiClient::onResult(QNetworkReply* reply)
 	}
 	else
 	{
-		Dtos::MovementResponse response;
+		Dtos::Person person;
 	
 		QByteArray response_data = reply->readAll();
 		QJsonDocument json = QJsonDocument::fromJson(response_data);
 		QJsonObject jsonObject = json.object();
 	
-		response.id = jsonObject["Id"].toInt();
-		response.ingress = jsonObject.value("Ingress").toBool();
-		response.name = jsonObject.value("Name").toString();
-		response.image = QByteArray::fromBase64(jsonObject.value("Image").toString().toLatin1());	
+		person.Id = jsonObject["Id"].toInt();
+		person.InLocation = jsonObject.value("Ingress").toBool();
+		person.Name = jsonObject.value("Name").toString();
+		person.Image = QByteArray::fromBase64(jsonObject.value("Image").toString().toLatin1());	
 
-		emit movementResponse(response);	
+		emit movementResponse(person);	
 	}	
 		
 	reply->abort();

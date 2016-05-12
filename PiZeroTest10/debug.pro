@@ -5,6 +5,7 @@
 DESTDIR = Debug
 CONFIG += debug
 
+QT += sql
 DEFINES += 
 LIBS += -LC:\SysGCC\Raspberry\arm-linux-gnueabihf\sysroot\usr\include -lpthread -lwiringPi -lmosquitto
 INCLUDEPATH += 

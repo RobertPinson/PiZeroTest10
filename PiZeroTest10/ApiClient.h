@@ -3,20 +3,32 @@
 #include <QtNetwork/QNetworkReply>
 
 namespace Dtos
-{
-	struct MovementResponse
-	{
-		int id;
-		QString name;
-		QByteArray image;
-		bool ingress;
-	}
-	;
-	
+{	
 	struct MovementRequest
 	{
 		int uid;
 		int deviceid;
+	};
+	
+	struct PeopleRequest
+	{
+		QStringList Ids;		
+	};
+	
+	struct Person
+	{
+		int Id;
+		QString Name;
+		QByteArray Image;
+		bool InLocation;
+		QString CardUid;
+	};
+	
+	struct PeopleResponse
+	{
+		bool IsSuccess;
+		QString ErrorMessage;
+		QList<Person> people;
 	};
 }
 
@@ -30,13 +42,16 @@ public:
 	ApiClient();
 	~ApiClient();
 	void PostMovement(QString cardId);
+	void GetPeople(const QList<int>& excludeIds);
 	
 signals:
-	void movementResponse(const Dtos::MovementResponse &);
+	void getPeopleResponse(const Dtos::PeopleResponse &);
+	void movementResponse(const Dtos::Person &);
 	void requestError(QString message);
-		
-	protected slots :	
-		void onResult(QNetworkReply* reply);
+
+protected slots:
+	void onGetPeopleResponse(QNetworkReply* reply);
+	void onResult(QNetworkReply* reply);
 	void onError(QNetworkReply::NetworkError reply);	
 };
 

@@ -6,6 +6,7 @@
 #include "ApiClient.h"
 #include "PersonDetailsDialog.h"
 #include "MqttClient.h"
+#include "DbManager.h"
 
 namespace Ui {
 	class MainWindow;
@@ -22,7 +23,8 @@ public:
 	protected slots : 
 	void OnCardPresent(QString uid);
 	void OnCardRemoved();
-	void OnMovementResponse(Dtos::MovementResponse movementResponse);
+	void OnMovementResponse(Dtos::Person person);
+	void OnPeopleResponse(Dtos::PeopleResponse response);
 	void OnRequestError(QString message);
 	
 private:
@@ -30,9 +32,11 @@ private:
 	NfcReader *MyNfcReader;
 	ApiClient *MyApiClient;
 	MqttClient *MyMqttClient;
+	DbManager *MyDbManager;
 	const char *userName = "apzvvubw";
 	const char *deviceId = "5";
 	const char *password = "bqqhHe9qGf1A";
+	void ShowPersonDetailsDialog(const Dtos::Person & person);
 };
 
 #endif // MAINWINDOW_H
