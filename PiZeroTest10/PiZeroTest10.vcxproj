@@ -66,10 +66,10 @@
     <ClCompile Include="ApiClient.cpp" />
     <ClCompile Include="DbManager.cpp" />
     <ClCompile Include="MainWindow.cpp" />
-    <ClCompile Include="MqttClient.cpp" />
     <ClCompile Include="NfcReader.cpp" />
     <ClCompile Include="PersonDetailsDialog.cpp" />
     <ClCompile Include="PiZeroTest10.cpp" />
+    <ClCompile Include="qtmosquitto.cpp" />
     <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -85,9 +85,9 @@
     <ClInclude Include="ApiClient.h" />
     <ClInclude Include="DbManager.h" />
     <ClInclude Include="MainWindow.h" />
-    <ClInclude Include="MqttClient.h" />
     <ClInclude Include="NfcReader.h" />
     <ClInclude Include="PersonDetailsDialog.h" />
+    <ClInclude Include="qtmosquitto.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>

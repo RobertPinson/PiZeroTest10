@@ -5,8 +5,8 @@
 #include "NfcReader.h"
 #include "ApiClient.h"
 #include "PersonDetailsDialog.h"
-#include "MqttClient.h"
 #include "DbManager.h"
+#include "qtmosquitto.h"
 
 namespace Ui {
 	class MainWindow;
@@ -15,23 +15,33 @@ namespace Ui {
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
+
     
 public:
 	explicit MainWindow(QWidget *parent = 0);	
 	~MainWindow();
 
-	protected slots : 
+protected slots : 
 	void OnCardPresent(QString uid);
 	void OnCardRemoved();
 	void OnMovementResponse(Dtos::Person person);
 	void OnPeopleResponse(Dtos::PeopleResponse response);
-	void OnRequestError(QString message);
+	void OnRequestError(QString message);	
+	
+    void doConnect();
+	void doSubscribe();
+	void doUnsubscribe();
+	void doPublish(const QString& payload);
+    
+	void message(const QString& topic, const QByteArray& payload);
+  
 	
 private:
+	QtMosquittoClient* mClient;
+	
 	Ui::MainWindow *ui;
 	NfcReader *MyNfcReader;
 	ApiClient *MyApiClient;
-	MqttClient *MyMqttClient;
 	DbManager *MyDbManager;
 	const char *userName = "apzvvubw";
 	const char *deviceId = "5";

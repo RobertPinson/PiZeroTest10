@@ -30,6 +30,12 @@ namespace Dtos
 		QString ErrorMessage;
 		QList<Person> people;
 	};
+	
+	struct MessageReceived
+	{
+		QString Topic;
+		QString PayLoad;
+	};
 }
 
 class ApiClient : public QObject

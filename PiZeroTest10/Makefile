@@ -54,40 +54,42 @@ SOURCES       = ApiClient.cpp \
 		PiZeroTest10.cpp \
 		Utility.cpp \
 		PersonDetailsDialog.cpp \
-		MqttClient.cpp \
-		DbManager.cpp Release/qrc_images.cpp \
+		DbManager.cpp \
+		qtmosquitto.cpp Release/qrc_images.cpp \
 		Release/moc_ApiClient.cpp \
 		Release/moc_MainWindow.cpp \
 		Release/moc_NfcReader.cpp \
-		Release/moc_PersonDetailsDialog.cpp
+		Release/moc_PersonDetailsDialog.cpp \
+		Release/moc_qtmosquitto.cpp
 OBJECTS       = Release/ApiClient.o \
 		Release/MainWindow.o \
 		Release/NfcReader.o \
 		Release/PiZeroTest10.o \
 		Release/Utility.o \
 		Release/PersonDetailsDialog.o \
-		Release/MqttClient.o \
 		Release/DbManager.o \
+		Release/qtmosquitto.o \
 		Release/qrc_images.o \
 		Release/moc_ApiClient.o \
 		Release/moc_MainWindow.o \
 		Release/moc_NfcReader.o \
-		Release/moc_PersonDetailsDialog.o
+		Release/moc_PersonDetailsDialog.o \
+		Release/moc_qtmosquitto.o
 DIST          =  ApiClient.h \
 		MainWindow.h \
 		NfcReader.h \
 		resource.h \
 		Utility.h \
 		PersonDetailsDialog.h \
-		MqttClient.h \
-		DbManager.h ApiClient.cpp \
+		DbManager.h \
+		qtmosquitto.h ApiClient.cpp \
 		MainWindow.cpp \
 		NfcReader.cpp \
 		PiZeroTest10.cpp \
 		Utility.cpp \
 		PersonDetailsDialog.cpp \
-		MqttClient.cpp \
-		DbManager.cpp
+		DbManager.cpp \
+		qtmosquitto.cpp
 QMAKE_TARGET  = PiZeroTest10
 DESTDIR       = Release/#avoid trailing-slash linebreak
 TARGET        = Release/PiZeroTest10
@@ -256,8 +258,8 @@ distdir: FORCE
 	@if not exist "$(DISTDIR)" mkdir "$(DISTDIR)" & if not exist "$(DISTDIR)" exit 1
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents images.qrc $(DISTDIR)/
-	$(COPY_FILE) --parents ApiClient.h MainWindow.h NfcReader.h resource.h Utility.h PersonDetailsDialog.h MqttClient.h DbManager.h $(DISTDIR)/
-	$(COPY_FILE) --parents ApiClient.cpp MainWindow.cpp NfcReader.cpp PiZeroTest10.cpp Utility.cpp PersonDetailsDialog.cpp MqttClient.cpp DbManager.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ApiClient.h MainWindow.h NfcReader.h resource.h Utility.h PersonDetailsDialog.h DbManager.h qtmosquitto.h $(DISTDIR)/
+	$(COPY_FILE) --parents ApiClient.cpp MainWindow.cpp NfcReader.cpp PiZeroTest10.cpp Utility.cpp PersonDetailsDialog.cpp DbManager.cpp qtmosquitto.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents MainWindow.ui PersonDetailsDialog.ui $(DISTDIR)/
 
 
@@ -287,9 +289,9 @@ Release/qrc_images.cpp: images.qrc \
 		C:/Users/pinso/Pictures/person-placeholder.jpg
 	'C:\SysGCC\Raspberry\Qt\v5\rcc.exe' -name images images.qrc -o Release/qrc_images.cpp
 
-compiler_moc_header_make_all: Release/moc_ApiClient.cpp Release/moc_MainWindow.cpp Release/moc_NfcReader.cpp Release/moc_PersonDetailsDialog.cpp
+compiler_moc_header_make_all: Release/moc_ApiClient.cpp Release/moc_MainWindow.cpp Release/moc_NfcReader.cpp Release/moc_PersonDetailsDialog.cpp Release/moc_qtmosquitto.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) Release/moc_ApiClient.cpp Release/moc_MainWindow.cpp Release/moc_NfcReader.cpp Release/moc_PersonDetailsDialog.cpp
+	-$(DEL_FILE) Release/moc_ApiClient.cpp Release/moc_MainWindow.cpp Release/moc_NfcReader.cpp Release/moc_PersonDetailsDialog.cpp Release/moc_qtmosquitto.cpp
 Release/moc_ApiClient.cpp: C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QtCore \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QtCoreDepends \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qabstractanimation.h \
@@ -733,7 +735,6 @@ Release/moc_MainWindow.cpp: C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/QDialog \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/qdialog.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui/QPixmap \
-		MqttClient.h \
 		DbManager.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql/QtSql \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql/QtSqlDepends \
@@ -767,6 +768,7 @@ Release/moc_MainWindow.cpp: C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql/qsqlrelationaltablemodel.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql/qsqltablemodel.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql/qtsqlversion.h \
+		qtmosquitto.h \
 		MainWindow.h
 	'C:\SysGCC\Raspberry\Qt\v5\moc.exe' $(DEFINES) -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/arm-linux-gnueabihf -IE:/Code/PiZeroTest10/PiZeroTest10/PiZeroTest10 -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5 -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtNetwork -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore -I/usr/include/c++/4.9 -I/usr/include/arm-linux-gnueabihf/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/arm-linux-gnueabihf/4.9/include -I/usr/local/include -I/usr/lib/gcc/arm-linux-gnueabihf/4.9/include-fixed -I/usr/include/arm-linux-gnueabihf -I/usr/include MainWindow.h -o Release/moc_MainWindow.cpp
 
@@ -1060,6 +1062,192 @@ Release/moc_PersonDetailsDialog.cpp: C:/sysgcc/raspberry/arm-linux-gnueabihf/sys
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui/QPixmap \
 		PersonDetailsDialog.h
 	'C:\SysGCC\Raspberry\Qt\v5\moc.exe' $(DEFINES) -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/arm-linux-gnueabihf -IE:/Code/PiZeroTest10/PiZeroTest10/PiZeroTest10 -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5 -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtNetwork -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore -I/usr/include/c++/4.9 -I/usr/include/arm-linux-gnueabihf/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/arm-linux-gnueabihf/4.9/include -I/usr/local/include -I/usr/lib/gcc/arm-linux-gnueabihf/4.9/include-fixed -I/usr/include/arm-linux-gnueabihf -I/usr/include PersonDetailsDialog.h -o Release/moc_PersonDetailsDialog.cpp
+
+Release/moc_qtmosquitto.cpp: C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QtCore \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QtCoreDepends \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qabstractanimation.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qobject.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qobjectdefs.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qnamespace.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qglobal.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qconfig.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfeatures.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsystemdetection.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qprocessordetection.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcompilerdetection.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtypeinfo.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtypetraits.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsysinfo.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qlogging.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qflags.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qbasicatomic.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_bootstrap.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qgenericatomic.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_msvc.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_armv7.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_armv6.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_armv5.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_ia64.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_mips.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_x86.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_cxx11.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_gcc.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_unix.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qglobalstatic.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmutex.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qnumeric.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qobjectdefs_impl.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstring.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qchar.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qbytearray.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qrefcount.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qarraydata.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstringbuilder.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qlist.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qalgorithms.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qiterator.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcoreevent.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qscopedpointer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmetatype.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qvarlengtharray.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcontainerfwd.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qisenum.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qobject_impl.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qanimationgroup.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qparallelanimationgroup.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qpauseanimation.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qpropertyanimation.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qvariantanimation.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qeasingcurve.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qvector.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qpoint.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qvariant.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmap.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qpair.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qdebug.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qhash.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtextstream.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qiodevice.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qlocale.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qshareddata.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qset.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcontiguouscache.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstringlist.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qdatastream.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qregexp.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstringmatcher.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsequentialanimationgroup.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtextcodec.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qendian.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qlibraryinfo.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qdatetime.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsharedpointer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsharedpointer_impl.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qbuffer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qdir.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfileinfo.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfile.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfiledevice.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qdiriterator.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfileselector.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QObject \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QStringList \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfilesystemwatcher.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qlockfile.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qloggingcategory.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qprocess.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qresource.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsavefile.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsettings.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstandardpaths.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtemporarydir.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QScopedPointer \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtemporaryfile.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qurl.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qurlquery.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qabstractitemmodel.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qabstractproxymodel.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qidentityproxymodel.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qitemselectionmodel.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsortfilterproxymodel.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstringlistmodel.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qjsonarray.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qjsonvalue.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qjsondocument.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qjsonobject.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qabstracteventdispatcher.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qeventloop.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qabstractnativeeventfilter.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qbasictimer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcoreapplication.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmath.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmetaobject.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmimedata.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qobjectcleanuphandler.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qpointer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsharedmemory.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsignalmapper.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsocketnotifier.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsystemsemaphore.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtimer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtranslator.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qwineventnotifier.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmimedatabase.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmimetype.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfactoryinterface.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qlibrary.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qplugin.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qpluginloader.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/quuid.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qabstractstate.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qabstracttransition.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qeventtransition.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfinalstate.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qhistorystate.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsignaltransition.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstate.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstatemachine.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qexception.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfuture.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfutureinterface.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qrunnable.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qresultstore.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfuturesynchronizer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfuturewatcher.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qreadwritelock.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsemaphore.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qthread.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qthreadpool.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qthreadstorage.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qwaitcondition.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qarraydataops.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qarraydatapointer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qbitarray.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qbytearraymatcher.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcache.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcollator.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcommandlineoption.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcommandlineparser.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcryptographichash.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qelapsedtimer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qline.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qlinkedlist.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmargins.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmessageauthenticationcode.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qqueue.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qrect.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsize.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qregularexpression.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qscopedvaluerollback.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstack.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtextboundaryfinder.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtimeline.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtimezone.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qxmlstream.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtcoreversion.h \
+		qtmosquitto.h
+	'C:\SysGCC\Raspberry\Qt\v5\moc.exe' $(DEFINES) -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/arm-linux-gnueabihf -IE:/Code/PiZeroTest10/PiZeroTest10/PiZeroTest10 -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5 -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtNetwork -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql -Ic:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore -I/usr/include/c++/4.9 -I/usr/include/arm-linux-gnueabihf/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/arm-linux-gnueabihf/4.9/include -I/usr/local/include -I/usr/lib/gcc/arm-linux-gnueabihf/4.9/include-fixed -I/usr/include/arm-linux-gnueabihf -I/usr/include qtmosquitto.h -o Release/moc_qtmosquitto.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -1528,7 +1716,6 @@ Release/MainWindow.o: MainWindow.cpp MainWindow.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/QDialog \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/qdialog.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui/QPixmap \
-		MqttClient.h \
 		DbManager.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql/QtSql \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql/QtSqlDepends \
@@ -1562,6 +1749,7 @@ Release/MainWindow.o: MainWindow.cpp MainWindow.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql/qsqlrelationaltablemodel.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql/qsqltablemodel.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql/qtsqlversion.h \
+		qtmosquitto.h \
 		Release/ui_MainWindow.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/QAction \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/qaction.h \
@@ -1587,7 +1775,8 @@ Release/MainWindow.o: MainWindow.cpp MainWindow.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/qmessagebox.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QTimer \
 		Utility.h \
-		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QMutex
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QMutex \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QDateTime
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Release/MainWindow.o MainWindow.cpp
 
 Release/NfcReader.o: NfcReader.cpp NfcReader.h \
@@ -2016,7 +2205,6 @@ Release/PiZeroTest10.o: PiZeroTest10.cpp MainWindow.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/QDialog \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/qdialog.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui/QPixmap \
-		MqttClient.h \
 		DbManager.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql/QtSql \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql/QtSqlDepends \
@@ -2050,6 +2238,7 @@ Release/PiZeroTest10.o: PiZeroTest10.cpp MainWindow.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql/qsqlrelationaltablemodel.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql/qsqltablemodel.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql/qtsqlversion.h \
+		qtmosquitto.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/QApplication \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/qapplication.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtWidgets/qdesktopwidget.h \
@@ -2212,9 +2401,6 @@ Release/PersonDetailsDialog.o: PersonDetailsDialog.cpp PersonDetailsDialog.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtGui/qbitmap.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Release/PersonDetailsDialog.o PersonDetailsDialog.cpp
-
-Release/MqttClient.o: MqttClient.cpp MqttClient.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Release/MqttClient.o MqttClient.cpp
 
 Release/DbManager.o: DbManager.cpp DbManager.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtSql/QtSql \
@@ -2481,6 +2667,192 @@ Release/DbManager.o: DbManager.cpp DbManager.h \
 		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QFlags
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Release/DbManager.o DbManager.cpp
 
+Release/qtmosquitto.o: qtmosquitto.cpp qtmosquitto.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QtCore \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QtCoreDepends \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qabstractanimation.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qobject.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qobjectdefs.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qnamespace.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qglobal.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qconfig.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfeatures.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsystemdetection.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qprocessordetection.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcompilerdetection.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtypeinfo.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtypetraits.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsysinfo.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qlogging.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qflags.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qbasicatomic.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_bootstrap.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qgenericatomic.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_msvc.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_armv7.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_armv6.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_armv5.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_ia64.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_mips.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_x86.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_cxx11.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_gcc.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qatomic_unix.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qglobalstatic.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmutex.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qnumeric.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qobjectdefs_impl.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstring.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qchar.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qbytearray.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qrefcount.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qarraydata.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstringbuilder.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qlist.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qalgorithms.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qiterator.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcoreevent.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qscopedpointer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmetatype.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qvarlengtharray.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcontainerfwd.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qisenum.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qobject_impl.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qanimationgroup.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qparallelanimationgroup.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qpauseanimation.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qpropertyanimation.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qvariantanimation.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qeasingcurve.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qvector.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qpoint.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qvariant.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmap.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qpair.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qdebug.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qhash.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtextstream.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qiodevice.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qlocale.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qshareddata.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qset.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcontiguouscache.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstringlist.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qdatastream.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qregexp.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstringmatcher.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsequentialanimationgroup.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtextcodec.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qendian.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qlibraryinfo.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qdatetime.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsharedpointer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsharedpointer_impl.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qbuffer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qdir.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfileinfo.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfile.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfiledevice.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qdiriterator.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfileselector.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QObject \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QStringList \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfilesystemwatcher.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qlockfile.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qloggingcategory.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qprocess.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qresource.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsavefile.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsettings.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstandardpaths.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtemporarydir.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/QScopedPointer \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtemporaryfile.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qurl.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qurlquery.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qabstractitemmodel.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qabstractproxymodel.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qidentityproxymodel.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qitemselectionmodel.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsortfilterproxymodel.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstringlistmodel.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qjsonarray.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qjsonvalue.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qjsondocument.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qjsonobject.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qabstracteventdispatcher.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qeventloop.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qabstractnativeeventfilter.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qbasictimer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcoreapplication.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmath.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmetaobject.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmimedata.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qobjectcleanuphandler.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qpointer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsharedmemory.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsignalmapper.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsocketnotifier.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsystemsemaphore.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtimer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtranslator.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qwineventnotifier.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmimedatabase.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmimetype.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfactoryinterface.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qlibrary.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qplugin.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qpluginloader.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/quuid.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qabstractstate.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qabstracttransition.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qeventtransition.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfinalstate.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qhistorystate.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsignaltransition.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstate.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstatemachine.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qexception.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfuture.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfutureinterface.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qrunnable.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qresultstore.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfuturesynchronizer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qfuturewatcher.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qreadwritelock.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsemaphore.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qthread.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qthreadpool.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qthreadstorage.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qwaitcondition.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qarraydataops.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qarraydatapointer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qbitarray.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qbytearraymatcher.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcache.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcollator.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcommandlineoption.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcommandlineparser.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qcryptographichash.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qelapsedtimer.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qline.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qlinkedlist.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmargins.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qmessageauthenticationcode.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qqueue.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qrect.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qsize.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qregularexpression.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qscopedvaluerollback.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qstack.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtextboundaryfinder.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtimeline.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtimezone.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qxmlstream.h \
+		C:/sysgcc/raspberry/arm-linux-gnueabihf/sysroot/usr/include/arm-linux-gnueabihf/qt5/QtCore/qtcoreversion.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Release/qtmosquitto.o qtmosquitto.cpp
+
 Release/qrc_images.o: Release/qrc_images.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Release/qrc_images.o Release/qrc_images.cpp
 
@@ -2495,6 +2867,9 @@ Release/moc_NfcReader.o: Release/moc_NfcReader.cpp
 
 Release/moc_PersonDetailsDialog.o: Release/moc_PersonDetailsDialog.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Release/moc_PersonDetailsDialog.o Release/moc_PersonDetailsDialog.cpp
+
+Release/moc_qtmosquitto.o: Release/moc_qtmosquitto.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Release/moc_qtmosquitto.o Release/moc_qtmosquitto.cpp
 
 ####### Install
 

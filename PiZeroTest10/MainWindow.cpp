@@ -10,6 +10,7 @@
 #include <QMutex>
 #include <wiringPi.h>
 #include <softTone.h>
+#include <QDateTime>
 
 using namespace utility;
 using namespace std;
@@ -22,19 +23,26 @@ QMutex mutex;
 #define PINBEEP 27
 
 static const QString path = "tracker.db";
+static void OnMessageCallBack();
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 	, ui(new Ui::MainWindow)
+	, mClient(new QtMosquittoClient(QString(), true, this))
 {
 	QApplication::setOverrideCursor(Qt::BlankCursor);
 	setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
 	ui->setupUi(this);	
-	QTimer::singleShot(1000, this, SLOT(showFullScreen()));
+	QTimer::singleShot(500, this, SLOT(showFullScreen()));
+	
+	mClient->setAutoReconnect(true);	
+	connect(mClient, SIGNAL(message(QString, QByteArray)), this, SLOT(message(QString, QByteArray)));
+	doConnect();
+	doSubscribe();
 	
 	MyNfcReader = new NfcReader;	
 	MyApiClient = new ApiClient;
-	MyMqttClient = new MqttClient(userName, deviceId, password);
+		
 	MyDbManager = new DbManager(path);
 	
 	//Load people
@@ -65,7 +73,7 @@ MainWindow::MainWindow(QWidget *parent)
 	QObject::connect(MyApiClient,
 		SIGNAL(requestError(QString)),
 		this,
-		SLOT(OnRequestError(QString)));		
+		SLOT(OnRequestError(QString)));			
 	
 	//Start NFC Reader thread
 	if (MyNfcReader->init() > 0)
@@ -76,7 +84,7 @@ MainWindow::MainWindow(QWidget *parent)
 	if (wiringPiSetupGpio() == -1)
 	{
 		qDebug() << "wiringPi setup error";
-	}
+	}	
 	
 	pinMode(PINRED, OUTPUT);
 	pinMode(PINGREEN, OUTPUT);
@@ -85,8 +93,56 @@ MainWindow::MainWindow(QWidget *parent)
 	
 	digitalWrite(PINRED, HIGH);
 	digitalWrite(PINGREEN, LOW);
-	digitalWrite(PINBLUE, HIGH);	
+	digitalWrite(PINBLUE, HIGH);
 }
+
+//TEST CODE
+void MainWindow::doConnect()
+{  
+	const QString server = "m21.cloudmqtt.com";
+	const QString uname = "apzvvubw";
+	const QString pword = "bqqhHe9qGf1A";
+	if (!(uname.isEmpty() || pword.isEmpty()))
+	{
+		mClient->setUsernamePassword(uname, pword);
+	}
+	mClient->doConnect(server, 10891);
+}
+
+void MainWindow::doPublish(const QString& payload)
+{
+	const QString topic = "location/2/movement";
+	//const QString payload = mPublishPayloadEdit->text().trimmed();
+  
+	if (mClient->publish(topic, payload) < 0)
+	{
+		qDebug() << "Publish failed";
+	}
+}
+
+void MainWindow::doSubscribe()
+{
+	const QString topic = "location/2/movement";
+	if (!mClient->subscribe(topic))
+	{
+		qDebug() << "Subscribe failed";
+	}
+}
+
+void MainWindow::message(const QString& topic, const QByteArray& payload)
+{
+	qDebug() << "Window::message" << topic << payload;	
+}
+
+void MainWindow::doUnsubscribe()
+{
+	const QString topic = "location/2/movement";
+	if (!mClient->unsubscribe(topic))
+	{
+		qDebug() << "Unsubscribe failed";
+	}
+}
+//END
 
 void MainWindow::OnCardRemoved()
 {	
@@ -94,17 +150,17 @@ void MainWindow::OnCardRemoved()
 	digitalWrite(PINBEEP, LOW);	
 }
 
-void MainWindow::OnCardPresent(QString uid)
+void MainWindow::OnCardPresent(QString cardId)
 {	
 	//Call API
 	
 	//Local DB cache first	
-	Dtos::Person person = MyDbManager->GetPersonByCardId(uid);
+	Dtos::Person person = MyDbManager->GetPersonByCardId(cardId);
 	
 	if (person.Name.isEmpty())
 	{
 		qDebug() << "Card Present Not in Cache: Calling API...";	
-		MyApiClient->PostMovement(uid);		
+		MyApiClient->PostMovement(cardId);		
 		
 		//Buzzer ON
 		digitalWrite(PINBEEP, HIGH);
@@ -128,13 +184,24 @@ void MainWindow::OnCardPresent(QString uid)
 		ShowPersonDetailsDialog(person);
 	}	
 	
-	QString message = "Card swiped ID: " + uid;
+	QJsonObject json;
+	json.insert("CardId", cardId);
+	json.insert("DeviceId", 5);	
+	json.insert("InLocation", person.InLocation);	
 	
-	QByteArray ba = message.toLatin1();
+	QDateTime local(QDateTime::currentDateTime());
+	QDateTime UTC(local.toUTC());
+	json.insert("SwipeTime", UTC.toString());
+	
+	QJsonDocument doc(json);
+	QString strJson(doc.toJson(QJsonDocument::Compact));
+	
+	QByteArray ba = strJson.toLatin1();
 	const char *c_msg = ba.data(); 
 	
 	//send message
-	bool mqttResult = MyMqttClient->publish("device/2/movement", c_msg);
+	doPublish(strJson);
+	//bool mqttResult = MyMqttClient->publish("location/2/movement", c_msg);
 	
 	qDebug() << "Movement message publish!";	
 }
@@ -191,9 +258,8 @@ MainWindow::~MainWindow()
 {
 	digitalWrite(PINRED, LOW);
 	digitalWrite(PINGREEN, LOW);
-	digitalWrite(PINBLUE, LOW);
+	digitalWrite(PINBLUE, LOW);	
 	
-	delete MyMqttClient;
 	delete MyApiClient;
 	delete MyNfcReader;
 	delete ui;

@@ -15,7 +15,7 @@ DbManager::DbManager(const QString &path)
 		
 		//Create tables
 		QSqlQuery query = QSqlQuery(_db);
-		query.exec("CREATE TABLE IF NOT EXISTS People (Id INTEGER PRIMARY KEY, Name TEXT, Image BLOB, InLocation INTEGER, CardId TEXT)");		
+		query.exec("CREATE TABLE IF NOT EXISTS Person (Id INTEGER PRIMARY KEY, Name TEXT, Image BLOB, InLocation INTEGER, CardId TEXT)");		
 	}
 }
 
@@ -28,16 +28,11 @@ Dtos::Person DbManager::GetPersonByCardId(const QString &cardId)
 	{
 		QSqlQuery sqlQuery;		
 		
-		sqlQuery.prepare("SELECT Id, Name, Image, InLocation, CardId FROM People WHERE CardId LIKE :cardId;");
+		sqlQuery.prepare("SELECT Id, Name, Image, InLocation, CardId FROM Person WHERE CardId LIKE :cardId;");
 		sqlQuery.bindValue(":cardId", cardId);
 				
 		if (sqlQuery.exec())
-		{
-//			while (sqlQuery.next()) {
-//				QSqlRecord record = sqlQuery.record();
-//				qDebug() << "Name : " << record.value("Name").toString();
-//			}
-			
+		{			
 			sqlQuery.first();
 			qDebug() << "Name : " << sqlQuery.value("Name").toString();
 			
@@ -64,8 +59,8 @@ bool DbManager::UpsertPerson(const Dtos::Person& person)
 	{		
 		QSqlQuery queryUpsert;
 		
-		QString query1 = "INSERT or IGNORE INTO People(Id, Name, Image, Inlocation, CardId) VALUES (:id, :name, :image, :inLocation, :cardId);"; 
-		QString query2 = "UPDATE People SET Name = :name, Image = :image, InLocation = :inLocation, CardId = :cardId WHERE changes()=0 AND Id = :id; ";
+		QString query1 = "INSERT or IGNORE INTO Person (Id, Name, Image, Inlocation, CardId) VALUES (:id, :name, :image, :inLocation, :cardId);"; 
+		QString query2 = "UPDATE Person SET Name = :name, Image = :image, InLocation = :inLocation, CardId = :cardId WHERE changes()=0 AND Id = :id; ";
 		
 		for (size_t i = 0; i < 2; i++)
 		{

@@ -117,7 +117,7 @@
   <Debug xsi:type="com.visualgdb.debug.remote">
     <AdditionalStartupCommands>
       <GDBPreStartupCommands>
-        <string>handle SIGILL noprint nostop</string>
+        <string>handle SIGILL nostop noprint</string>
       </GDBPreStartupCommands>
       <GDBStartupCommands />
     </AdditionalStartupCommands>

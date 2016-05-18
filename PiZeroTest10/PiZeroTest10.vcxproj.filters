@@ -41,7 +41,10 @@
     <ClCompile Include="PersonDetailsDialog.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="MqttClient.cpp">
+    <ClCompile Include="DbManager.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="qtmosquitto.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -87,7 +90,10 @@
     <ClInclude Include="PersonDetailsDialog.h">
       <Filter>Header files</Filter>
     </ClInclude>
-    <ClInclude Include="MqttClient.h">
+    <ClInclude Include="DbManager.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="qtmosquitto.h">
       <Filter>Header files</Filter>
     </ClInclude>
   </ItemGroup>

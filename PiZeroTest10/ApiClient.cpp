@@ -124,6 +124,7 @@ void ApiClient::onGetPeopleResponse(QNetworkReply* reply)
 			person.Name = obj["Name"].toString();
 			person.Image = QByteArray::fromBase64(obj["Image"].toString().toLatin1());	
 			person.CardUid = obj["CardId"].toString();
+			person.InLocation = obj["InLocation"].toBool();
 			
 			peopleResponse.people.append(person);
 		}		
