@@ -7,7 +7,7 @@
 #include <QUrlQuery>
 
 Q_DECLARE_METATYPE(Dtos::PeopleResponse)
-Q_DECLARE_METATYPE(Dtos::Person)
+Q_DECLARE_METATYPE(Dtos::Person)	
 	
 ApiClient::ApiClient()
 {
@@ -15,7 +15,7 @@ ApiClient::ApiClient()
 	//baseUrl = QString("http://trackerdemosite.azurewebsites.net/api/");
 }
 
-void ApiClient::GetPeople(const QList<int>& excludeIds)
+void ApiClient::GetPeople(const QList<int>& excludeIds, const int& deviceId)
 {
 	QJsonObject json;
 	QString exIds;
@@ -28,7 +28,7 @@ void ApiClient::GetPeople(const QList<int>& excludeIds)
 	}
 	
 	json.insert("ExcludeIds", exIds);
-	json.insert("DeviceId", 5);	
+	json.insert("DeviceId", deviceId);	
 
 	QNetworkAccessManager* mgr = new QNetworkAccessManager(this);
 		
@@ -39,7 +39,7 @@ void ApiClient::GetPeople(const QList<int>& excludeIds)
 	
 	QUrl url(baseUrl + "People");
 	QUrlQuery query;	
-	query.addQueryItem("deviceId", QString("5"));
+	query.addQueryItem("deviceId", QString::number(deviceId));
 	query.addQueryItem("excludeids", exIds);
 	
 	url.setQuery(query);	
@@ -139,11 +139,11 @@ void ApiClient::onGetPeopleResponse(QNetworkReply* reply)
 	reply->manager()->deleteLater();
 }
 
-void ApiClient::PostMovement(QString cardId)
+void ApiClient::PostMovement(const QString& cardId, const int& deviceId)
 {
 	QJsonObject json;
 	json.insert("Uid", cardId);
-	json.insert("DeviceId", 5);	
+	json.insert("DeviceId", deviceId);	
 
 	QNetworkAccessManager* mgr = new QNetworkAccessManager(this);
 		
@@ -182,6 +182,7 @@ void ApiClient::onResult(QNetworkReply* reply)
 		QJsonObject jsonObject = json.object();
 	
 		person.Id = jsonObject["Id"].toInt();
+		person.CardUid = jsonObject["CardUid"].toString();
 		person.InLocation = jsonObject.value("Ingress").toBool();
 		person.Name = jsonObject.value("Name").toString();
 		person.Image = QByteArray::fromBase64(jsonObject.value("Image").toString().toLatin1());	

@@ -1,5 +1,7 @@
 #include "DbManager.h"
 
+Q_DECLARE_METATYPE(Dtos::Movement)
+	
 DbManager::DbManager(const QString &path)
 {
 	_db = QSqlDatabase::addDatabase("QSQLITE");
@@ -15,8 +17,102 @@ DbManager::DbManager(const QString &path)
 		
 		//Create tables
 		QSqlQuery query = QSqlQuery(_db);
-		query.exec("CREATE TABLE IF NOT EXISTS Person (Id INTEGER PRIMARY KEY, Name TEXT, Image BLOB, InLocation INTEGER, CardId TEXT)");		
+		query.exec("CREATE TABLE IF NOT EXISTS Person (Id INTEGER PRIMARY KEY, Name TEXT, Image BLOB, InLocation INTEGER, CardId TEXT)");
+		query.exec("CREATE TABLE IF NOT EXISTS Movement (Id INTEGER PRIMARY KEY, CardId TEXT, SwipeTime TEXT, InLocation INTEGER)");
 	}
+}
+
+bool DbManager::AddMovement(const QString &cardId, const QString &swipeTime, const int &inLocation)
+{
+	bool success = false;
+
+	if (!cardId.isEmpty() && !swipeTime.isEmpty())
+	{		
+		QSqlQuery queryAdd;
+		
+		QString query = "INSERT INTO Movement (CardId, SwipeTime, InLocation) VALUES (:cardId, :swipeTime, :inLocation);";
+				
+		queryAdd.prepare(query);		
+		queryAdd.bindValue(":cardId", cardId);
+		queryAdd.bindValue(":swipeTime", swipeTime);
+		queryAdd.bindValue(":inLocation", inLocation);		
+			
+		if (queryAdd.exec())
+		{
+			success = true;
+		}
+		else
+		{
+			qDebug() << "Add Movement failed: " << queryAdd.lastError();
+		}	
+	}
+	else
+	{
+		qDebug() << "add movement failed: CardId or SwipeTime cannot be empty";
+	}
+
+	return success;
+}
+
+QList <Dtos::Movement> DbManager::GetMovements()
+{
+	QList <Dtos::Movement> result;	
+	QSqlQuery sqlQuery;		
+		
+	sqlQuery.prepare("SELECT Id, CardId, SwipeTime, InLocation FROM Movement;");	
+				
+	if (sqlQuery.exec())
+	{			
+		sqlQuery.first();
+		while (sqlQuery.next())
+		{
+			Dtos::Movement movement;
+			movement.Id = sqlQuery.value("Id").toInt();
+			movement.SwipeTime = sqlQuery.value("SwipeTime").toString();
+			movement.CardId = sqlQuery.value("CardId").toString();
+			movement.InLocation = sqlQuery.value("InLocation").toInt();
+			
+			result.append(movement);
+		}		
+	}
+	else
+	{
+		qDebug() << "Get Movements error: " << sqlQuery.lastError();
+	}
+	
+	//qDebug() << QString("GetMovements returned %1 records").arg(result.count());
+	
+	return result;
+}
+
+bool DbManager::DeleteMovement(const int &id)
+{
+	bool result = false;
+
+	if (id > 0)
+	{		
+		QSqlQuery queryDelete;
+		
+		QString query = "DELETE FROM Movement WHERE Id = :id;"; 		
+		
+		queryDelete.prepare(query);		
+		queryDelete.bindValue(":id", id);			
+			
+		if (queryDelete.exec())
+		{
+			result = true;
+		}
+		else
+		{
+			qDebug() << "Delete Movement failed: " << queryDelete.lastError();
+		}
+	}
+	else
+	{
+		qDebug() << "DeleteMovement failed: Id <= 0";
+	}
+
+	return result;
 }
 
 Dtos::Person DbManager::GetPersonByCardId(const QString &cardId)
@@ -33,14 +129,16 @@ Dtos::Person DbManager::GetPersonByCardId(const QString &cardId)
 				
 		if (sqlQuery.exec())
 		{			
-			sqlQuery.first();
-			qDebug() << "Name : " << sqlQuery.value("Name").toString();
+			if (sqlQuery.first())
+			{
+				qDebug() << "Name : " << sqlQuery.value("Name").toString();
 			
-			result.Id = sqlQuery.value("Id").toInt();
-			result.Image = sqlQuery.value("Image").toByteArray();
-			result.Name = sqlQuery.value("Name").toString();
-			result.InLocation = sqlQuery.value("Inlocation").toInt() == 1 ? true : false;
-			result.CardUid = sqlQuery.value("CardId").toString();
+				result.Id = sqlQuery.value("Id").toInt();
+				result.Image = sqlQuery.value("Image").toByteArray();
+				result.Name = sqlQuery.value("Name").toString();
+				result.InLocation = sqlQuery.value("Inlocation").toInt() == 1 ? true : false;
+				result.CardUid = sqlQuery.value("CardId").toString();
+			}
 		}
 		else
 		{

@@ -36,6 +36,14 @@ namespace Dtos
 		QString Topic;
 		QString PayLoad;
 	};
+	
+	struct Movement
+	{
+		int Id;
+		QString CardId;
+		QString SwipeTime;
+		int InLocation;
+	};
 }
 
 class ApiClient : public QObject
@@ -47,13 +55,13 @@ class ApiClient : public QObject
 public:
 	ApiClient();
 	~ApiClient();
-	void PostMovement(QString cardId);
-	void GetPeople(const QList<int>& excludeIds);
+	void PostMovement(const QString& cardId, const int& deviceId);
+	void GetPeople(const QList<int>& excludeIds, const int& deviceId);
 	
 signals:
 	void getPeopleResponse(const Dtos::PeopleResponse &);
 	void movementResponse(const Dtos::Person &);
-	void requestError(QString message);
+	void requestError(const QString& message);
 
 protected slots:
 	void onGetPeopleResponse(QNetworkReply* reply);

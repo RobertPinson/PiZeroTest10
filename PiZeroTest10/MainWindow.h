@@ -26,7 +26,8 @@ protected slots :
 	void OnCardRemoved();
 	void OnMovementResponse(Dtos::Person person);
 	void OnPeopleResponse(Dtos::PeopleResponse response);
-	void OnRequestError(QString message);	
+	void OnRequestError(QString message);
+	void OnSendMovements();
 	
     void doConnect();
 	void doSubscribe();
@@ -43,9 +44,7 @@ private:
 	NfcReader *MyNfcReader;
 	ApiClient *MyApiClient;
 	DbManager *MyDbManager;
-	const char *userName = "apzvvubw";
-	const char *deviceId = "5";
-	const char *password = "bqqhHe9qGf1A";
+	QTimer *movementTimer;
 	void ShowPersonDetailsDialog(const Dtos::Person & person);
 };
 

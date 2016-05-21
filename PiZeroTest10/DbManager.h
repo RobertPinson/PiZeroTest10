@@ -14,7 +14,10 @@ public:
 	bool IsOpen() const;
 	bool UpsertPerson(const Dtos::Person &person);
 	Dtos::Person GetPersonByCardId(const QString &cardId);
-	void UpdatePerson(const Dtos::Person &person);
+	bool AddMovement(const QString &cardId, const QString &swipeTime, const int &inLocation);
+	QList <Dtos::Movement> GetMovements();
+	bool DeleteMovement(const int &id);
+	
 private:
 	QSqlDatabase _db;	
 };
