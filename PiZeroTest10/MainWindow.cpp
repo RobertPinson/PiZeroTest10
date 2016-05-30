@@ -25,6 +25,7 @@ QMutex mutex;
 const QString server = "m21.cloudmqtt.com";
 const QString uname = "apzvvubw";
 const QString pword = "bqqhHe9qGf1A";
+const QString topic = "location/2/movement";
 const int deviceId = 5;
 const int locationId = 2;
 static const QString dbPath = "tracker.db";
@@ -48,29 +49,23 @@ MainWindow::MainWindow(QWidget *parent)
 	MyNfcReader = new NfcReader;	
 	MyApiClient = new ApiClient;
 		
-	MyDbManager = new DbManager(dbPath);
-	
-	//Load people
-	//Call API
-	qDebug() << "Load People: Calling API...";	
-	QList<int> excludeIds;
-	MyApiClient->GetPeople(excludeIds, deviceId);
+	MyDbManager = new DbManager(dbPath);	
 	
 	//wire up events
-	QObject::connect(MyNfcReader,
+	connect(MyNfcReader,
 		SIGNAL(cardPresent(QString)),
 		SLOT(OnCardPresent(QString)));
 	
-	QObject::connect(MyNfcReader,
+	connect(MyNfcReader,
 		SIGNAL(cardRemoved()),
 		SLOT(OnCardRemoved()));	
 		
-	QObject::connect(MyApiClient,
+	connect(MyApiClient,
 		SIGNAL(movementResponse(Dtos::Person)),
 		this,
 		SLOT(OnMovementResponse(Dtos::Person)));
 	
-	QObject::connect(MyApiClient,
+	connect(MyApiClient,
 		SIGNAL(getPeopleResponse(Dtos::PeopleResponse)),
 		this,
 		SLOT(OnPeopleResponse(Dtos::PeopleResponse)));
@@ -79,6 +74,17 @@ MainWindow::MainWindow(QWidget *parent)
 		SIGNAL(requestError(QString)),
 		this,
 		SLOT(OnRequestError(QString)));	
+	
+	//Load people
+	//Call API
+	qDebug() << "Load People: Calling API...";	
+	QList<int> excludeIds;
+	MyApiClient->GetPeople(excludeIds, deviceId);
+	
+	//Start Load People timer
+	peopleTimer = new QTimer(this);
+	connect(peopleTimer, SIGNAL(timeout()), this, SLOT(OnGetPeople()));
+	peopleTimer->start(60000);
 	
 	//Start movement msg timer
 	movementTimer = new QTimer(this);
@@ -116,18 +122,36 @@ void MainWindow::doConnect()
 	mClient->doConnect(server, 10891);
 }
 
-void MainWindow::doPublish(const QString& payload)
+bool MainWindow::doPublish(const QString& payload)
 {
-	const QString topic = "location/2/movement";  
+	bool result=true;
+	
 	if (mClient->publish(topic, payload) < 0)
 	{
 		qDebug() << "Publish failed";
+		qDebug() << "Reconnecting to broker";
+		
+		result = false;
+		
+		if (mClient->doReconnect())
+		{
+			if (mClient->publish(topic, payload) < 0)
+			{
+				qDebug() << "Publish failed after reconnect";
+				result = false;
+			}
+			else
+			{
+				result = true;	
+			}
+		}
 	}
+	
+	return result;
 }
 
 void MainWindow::doSubscribe()
-{
-	const QString topic = "location/2/movement";
+{	
 	if (!mClient->subscribe(topic))
 	{
 		qDebug() << "Subscribe failed";
@@ -192,8 +216,6 @@ void MainWindow::doUnsubscribe()
 
 void MainWindow::OnCardRemoved()
 {	
-	//Buzzer OFF
-	digitalWrite(PINBEEP, LOW);	
 }
 
 void MainWindow::OnCardPresent(QString cardId)
@@ -205,12 +227,13 @@ void MainWindow::OnCardPresent(QString cardId)
 	
 	if (person.Name.isEmpty())
 	{
-		qDebug() << "Card Present Not in Cache: Calling API...";	
-		MyApiClient->PostMovement(cardId, deviceId);		
+		qDebug() << "Card Present Not in Cache: Calling API...";
+		QDateTime local(QDateTime::currentDateTime());
+		QDateTime UTC(local.toUTC());
+		MyApiClient->PostMovement(cardId, deviceId, UTC.toString(Qt::ISODate));		
 		
-		//Buzzer ON
-		digitalWrite(PINBEEP, HIGH);
-	
+		Beep();
+		
 		//BLUE LED
 		digitalWrite(PINGREEN, HIGH);
 		digitalWrite(PINBLUE, LOW);
@@ -220,8 +243,7 @@ void MainWindow::OnCardPresent(QString cardId)
 		person.InLocation = !person.InLocation;		
 		MyDbManager->UpsertPerson(person);		
 			
-		//Buzzer ON
-		digitalWrite(PINBEEP, HIGH);
+		Beep();
 	
 		//BLUE LED
 		digitalWrite(PINGREEN, HIGH);
@@ -236,6 +258,19 @@ void MainWindow::OnCardPresent(QString cardId)
 	MyDbManager->AddMovement(cardId, UTC.toString(Qt::ISODate), person.InLocation);	
 	
 	qDebug() << "movement saved to DB";
+}
+
+void MainWindow::doBeep()
+{
+	//Buzzer ON
+	digitalWrite(PINBEEP, HIGH);
+	delay(200);
+	digitalWrite(PINBEEP, LOW);
+}
+
+void MainWindow::Beep()
+{
+	QTimer::singleShot(0, this, SLOT(doBeep()));
 }
 
 void MainWindow::OnPeopleResponse(Dtos::PeopleResponse response)
@@ -275,8 +310,11 @@ void MainWindow::OnRequestError(QString message)
 {
 	qDebug() << "API ERROR: " + message;	
 	
+	//TODO show Card not recognised screen
+	
 	//TODO LED RED then GREEN
 	digitalWrite(PINGREEN, HIGH);
+	digitalWrite(PINBLUE, HIGH);
 	digitalWrite(PINRED, LOW);
 	delay(500);
 	digitalWrite(PINRED, HIGH);
@@ -286,6 +324,12 @@ void MainWindow::OnRequestError(QString message)
 	digitalWrite(PINBEEP, HIGH);
 	delay(200);
 	digitalWrite(PINBEEP, LOW);
+}
+
+void MainWindow::OnGetPeople()
+{
+	QList<int> excludeIds;
+	MyApiClient->GetPeople(excludeIds, deviceId);
 }
 
 void MainWindow::OnSendMovements()
@@ -302,18 +346,19 @@ void MainWindow::OnSendMovements()
 		json.insert("SwipeTime", movement.SwipeTime);
 	
 		QJsonDocument doc(json);
-		QString strJson(doc.toJson(QJsonDocument::Compact));
+		QString strJson(doc.toJson());
 	
 		//send message
-		doPublish(strJson);
-	
-		qDebug() << "Movement message publish";
+		if (doPublish(strJson))
+		{	
+			qDebug() << "Movement published";
 		
-		//delete message
-		if (!MyDbManager->DeleteMovement(movement.Id))
-		{
-			qDebug() << "Failed to delete movement!!";
-		}		
+			//delete message
+			if (!MyDbManager->DeleteMovement(movement.Id))
+			{
+				qDebug() << "Failed to delete movement!!";
+			}				
+		}	
 	}
 }
 

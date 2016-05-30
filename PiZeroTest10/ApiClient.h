@@ -55,7 +55,7 @@ class ApiClient : public QObject
 public:
 	ApiClient();
 	~ApiClient();
-	void PostMovement(const QString& cardId, const int& deviceId);
+	void PostMovement(const QString& cardId, const int& deviceId, const QString& swipeTime);
 	void GetPeople(const QList<int>& excludeIds, const int& deviceId);
 	
 signals:

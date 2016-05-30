@@ -123,7 +123,7 @@ void ApiClient::onGetPeopleResponse(QNetworkReply* reply)
 			person.Id = obj["Id"].toInt();
 			person.Name = obj["Name"].toString();
 			person.Image = QByteArray::fromBase64(obj["Image"].toString().toLatin1());	
-			person.CardUid = obj["CardId"].toString();
+			person.CardUid = obj["CardUid"].toString();
 			person.InLocation = obj["InLocation"].toBool();
 			
 			peopleResponse.people.append(person);
@@ -139,11 +139,12 @@ void ApiClient::onGetPeopleResponse(QNetworkReply* reply)
 	reply->manager()->deleteLater();
 }
 
-void ApiClient::PostMovement(const QString& cardId, const int& deviceId)
+void ApiClient::PostMovement(const QString& cardId, const int& deviceId, const QString& swipeTime)
 {
 	QJsonObject json;
-	json.insert("Uid", cardId);
-	json.insert("DeviceId", deviceId);	
+	json.insert("CardUid", cardId);
+	json.insert("DeviceId", deviceId);
+	json.insert("SwipeTime", swipeTime);
 
 	QNetworkAccessManager* mgr = new QNetworkAccessManager(this);
 		

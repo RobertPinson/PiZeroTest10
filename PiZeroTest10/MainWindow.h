@@ -28,14 +28,14 @@ protected slots :
 	void OnPeopleResponse(Dtos::PeopleResponse response);
 	void OnRequestError(QString message);
 	void OnSendMovements();
+	void OnGetPeople();
 	
     void doConnect();
 	void doSubscribe();
 	void doUnsubscribe();
-	void doPublish(const QString& payload);
-    
+	bool doPublish(const QString& payload);    
 	void message(const QString& topic, const QByteArray& payload);
-  
+	void doBeep();
 	
 private:
 	QtMosquittoClient* mClient;
@@ -45,7 +45,9 @@ private:
 	ApiClient *MyApiClient;
 	DbManager *MyDbManager;
 	QTimer *movementTimer;
+	QTimer *peopleTimer;
 	void ShowPersonDetailsDialog(const Dtos::Person & person);
+	void Beep();
 };
 
 #endif // MAINWINDOW_H
