@@ -79,6 +79,7 @@
     <None Include="PersonDetailsDialog.ui" />
     <None Include="PiZeroTest10-Debug.vgdbsettings" />
     <None Include="PiZeroTest10-Release.vgdbsettings" />
+    <None Include="ReadMe" />
     <None Include="release.pro" />
   </ItemGroup>
   <ItemGroup>

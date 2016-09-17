@@ -70,6 +70,7 @@
     <None Include="images.qrc">
       <Filter>Resource files</Filter>
     </None>
+    <None Include="ReadMe" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainWindow.h">

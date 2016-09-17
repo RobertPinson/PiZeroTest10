@@ -1,0 +1,3 @@
+﻿Commands
+
+sudo ./PiZeroTest10 -platform linuxfb:fb=/dev/fb1
