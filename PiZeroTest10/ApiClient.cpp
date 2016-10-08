@@ -11,8 +11,8 @@ Q_DECLARE_METATYPE(Dtos::Person)
 
 ApiClient::ApiClient()
 {
-	//baseUrl = QString("http://office-pc:55577/api/");
-	baseUrl = QString("http://192.168.0.50:55577/api/");
+	//baseUrl = QString("http://192.168.0.50:55577/api/");
+	baseUrl = QString("http://trackeradmin.azurewebsites.net//api/");
 }
 
 void ApiClient::GetPeople(const QList<int>& excludeIds, const int& deviceId)
@@ -125,6 +125,9 @@ void ApiClient::onGetPeopleResponse(QNetworkReply* reply)
 			person.Image = QByteArray::fromBase64(obj["image"].toString().toLatin1());
 			person.CardUid = obj["cardUid"].toString();
 			person.InLocation = obj["inLocation"].toBool();
+			person.LastUpdate = QDateTime::fromString(obj["swipeTime"].toString(),Qt::ISODate).toString(Qt::ISODate);
+
+			//qDebug() << "GET [People] LastUpdate: " + QDateTime::fromString(obj["swipeTime"].toString(), Qt::ISODate).toString(Qt::ISODate);
 
 			peopleResponse.people.append(person);
 		}
@@ -139,24 +142,24 @@ void ApiClient::onGetPeopleResponse(QNetworkReply* reply)
 	reply->manager()->deleteLater();
 }
 
-void ApiClient::PostMovement(const QString& cardId, const int& deviceId, const QString& swipeTime)
+void ApiClient::GetPerson(const QString& cardId)
 {
 	QJsonObject json;
 	json.insert("CardUid", cardId);
-	json.insert("DeviceId", deviceId);
-	json.insert("SwipeTime", swipeTime);
 
 	QNetworkAccessManager* mgr = new QNetworkAccessManager(this);
 
 	connect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(onResult(QNetworkReply*)));
-
-	QUrl url(baseUrl + "Movement");
+	QUrlQuery query;
+	query.addQueryItem("cardId", cardId);
+	QUrl url(baseUrl + "GetPerson");
+	url.setQuery(query.query());
 	QNetworkRequest request(url);
 	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
 	qDebug() << "Http Post JSON";
 	QByteArray data = QJsonDocument(json).toJson();
-	QNetworkReply* reply = mgr->post(request, data);
+	QNetworkReply* reply = mgr->get(request);
 
 	connect(reply,
 		SIGNAL(error(QNetworkReply::NetworkError)),
@@ -187,8 +190,9 @@ void ApiClient::onResult(QNetworkReply* reply)
 		person.InLocation = jsonObject.value("ingress").toBool();
 		person.Name = jsonObject.value("name").toString();
 		person.Image = QByteArray::fromBase64(jsonObject.value("image").toString().toLatin1());
+		person.LastUpdate = QDateTime::fromString(jsonObject["swipeTime"].toString()).toString(Qt::ISODate);
 
-		emit movementResponse(person);
+		emit getPersonResponse(person);
 	}
 
 	reply->abort();

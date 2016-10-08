@@ -26,9 +26,9 @@ const QString server = "m21.cloudmqtt.com";
 const int port = 15480;
 const QString uname = "regcjdre";
 const QString pword = "sjOPZR3T1ehQ";
-const QString topic = "location/2/movement";
 const int deviceId = 2;
 const int locationId = 2;
+const QString topic = "location/" + QString::number(deviceId) + "/movement";
 static const QString dbPath = "tracker.db";
 static void OnMessageCallBack();
 
@@ -62,9 +62,9 @@ MainWindow::MainWindow(QWidget *parent)
 		SLOT(OnCardRemoved()));
 
 	connect(MyApiClient,
-		SIGNAL(movementResponse(Dtos::Person)),
+		SIGNAL(getPersonResponse(Dtos::Person)),
 		this,
-		SLOT(OnMovementResponse(Dtos::Person)));
+		SLOT(OnGetPersonResponse(Dtos::Person)));
 
 	connect(MyApiClient,
 		SIGNAL(getPeopleResponse(Dtos::PeopleResponse)),
@@ -85,7 +85,7 @@ MainWindow::MainWindow(QWidget *parent)
 	//Start Load People timer
 	peopleTimer = new QTimer(this);
 	connect(peopleTimer, SIGNAL(timeout()), this, SLOT(OnGetPeople()));
-	peopleTimer->start(60000);
+	peopleTimer->start(600000);
 
 	//Start movement msg timer
 	movementTimer = new QTimer(this);
@@ -190,8 +190,21 @@ void MainWindow::message(const QString& topic, const QByteArray& payload)
 	QString movementCardId = jsonObject["CardId"].toString();
 	int movementInLocation = jsonObject["InLocation"].toInt();
 
+	qDebug() << "Message SwipeTime string: " + jsonObject["SwipeTime"].toString();
+
+	QDateTime swipeTime = QDateTime::fromString(jsonObject["SwipeTime"].toString(), Qt::ISODate);
+
 	//Update DB
 	Dtos::Person person = MyDbManager->GetPersonByCardId(movementCardId);
+
+	//if movement swipe time is after the last movement i know about ignore.
+	if (QDateTime::fromString(person.LastUpdate) >= swipeTime)
+	{
+		qDebug() << "Message ignored: swipe time: " + swipeTime.toString(Qt::ISODate) + "after last update: " + person.LastUpdate;
+		return;
+	}
+
+	person.LastUpdate = swipeTime.toString(Qt::ISODate);
 
 	if (person.Id > 0)
 	{
@@ -201,13 +214,10 @@ void MainWindow::message(const QString& topic, const QByteArray& payload)
 		MyDbManager->UpsertPerson(person);
 		return;
 	}
-
-	//TODO Get person Data from server....
 }
 
 void MainWindow::doUnsubscribe()
 {
-	const QString topic = "location/2/movement";
 	if (!mClient->unsubscribe(topic))
 	{
 		qDebug() << "Unsubscribe failed";
@@ -231,7 +241,7 @@ void MainWindow::OnCardPresent(QString cardId)
 		qDebug() << "Card Present Not in Cache: Calling API...";
 		QDateTime local(QDateTime::currentDateTime());
 		QDateTime UTC(local.toUTC());
-		MyApiClient->PostMovement(cardId, deviceId, UTC.toString(Qt::ISODate));
+		MyApiClient->GetPerson(cardId);
 
 		Beep();
 
@@ -293,9 +303,10 @@ void MainWindow::OnPeopleResponse(Dtos::PeopleResponse response)
 	mutex.unlock();
 }
 
-void MainWindow::OnMovementResponse(Dtos::Person person)
+void MainWindow::OnGetPersonResponse(Dtos::Person person)
 {
 	mutex.lock();
+
 	qDebug() << "On Movement Post Response";
 	qDebug() << "ID: " + QString::number(person.Id);
 	qDebug() << "Name: " + person.Name;
@@ -311,7 +322,7 @@ void MainWindow::OnRequestError(QString message)
 {
 	qDebug() << "API ERROR: " + message;
 
-	//TODO show Card not recognised screen
+	//TODO show Card not recognized screen
 
 	//TODO LED RED then GREEN
 	digitalWrite(PINGREEN, HIGH);

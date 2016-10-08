@@ -16,30 +16,30 @@ class MainWindow : public QMainWindow
 {
 	Q_OBJECT
 
-    
+
 public:
-	explicit MainWindow(QWidget *parent = 0);	
+	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
 
-protected slots : 
+protected slots :
 	void OnCardPresent(QString uid);
 	void OnCardRemoved();
-	void OnMovementResponse(Dtos::Person person);
+	void OnGetPersonResponse(Dtos::Person person);
 	void OnPeopleResponse(Dtos::PeopleResponse response);
 	void OnRequestError(QString message);
 	void OnSendMovements();
 	void OnGetPeople();
-	
+
     void doConnect();
 	void doSubscribe();
 	void doUnsubscribe();
-	bool doPublish(const QString& payload);    
+	bool doPublish(const QString& payload);
 	void message(const QString& topic, const QByteArray& payload);
 	void doBeep();
-	
+
 private:
 	QtMosquittoClient* mClient;
-	
+
 	Ui::MainWindow *ui;
 	NfcReader *MyNfcReader;
 	ApiClient *MyApiClient;
